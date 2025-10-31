@@ -1,0 +1,32 @@
+{
+  "name": "crystalchess/tournament-platform",
+  "description": "Chess Tournament Booking Platform",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": ">=7.4",
+    "phpmailer/phpmailer": "^6.8",
+    "stripe/stripe-php": "^10.0",
+    "vlucas/phpdotenv": "^5.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "CrystalChess\\Core\\": "core/",
+      "CrystalChess\\Modules\\": "modules/"
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "@php -r \"if (!file_exists('uploads/profiles')) { mkdir('uploads/profiles', 0755, true); }\"",
+      "@php -r \"if (!file_exists('uploads/events')) { mkdir('uploads/events', 0755, true); }\""
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "preferred-install": "dist",
+    "sort-packages": true
+  }
+}

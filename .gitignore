@@ -1,0 +1,33 @@
+# Create .gitignore file
+touch .gitignore
+```
+
+Add this content to `.gitignore`:
+```
+# Dependencies
+/vendor/
+node_modules/
+
+# Environment files
+.env
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Composer
+composer.lock
+
+# Cache
+/cache/
+/tmp/

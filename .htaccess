@@ -1,0 +1,16 @@
+# .htaccess (placed in root directory)
+
+RewriteEngine On
+RewriteBase /
+
+# Allow direct access to assets, uploads, and API
+RewriteCond %{REQUEST_URI} ^/public/assets/ [OR]
+RewriteCond %{REQUEST_URI} ^/uploads/ [OR]
+RewriteCond %{REQUEST_URI} ^/api/ [OR]
+RewriteCond %{REQUEST_URI} \.(css|js|jpg|jpeg|png|gif|svg|ico|woff|woff2|ttf|eot|pdf)$
+RewriteRule ^ - [L]
+
+# If file or directory doesn't exist, route to the main router
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]

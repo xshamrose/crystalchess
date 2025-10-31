@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgDefault" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563eb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgDefault)"/>
+  
+  <!-- Chess board -->
+  <g transform="translate(100, 80)">
+    <!-- Board background -->
+    <rect x="0" y="0" width="200" height="200" fill="#8b4513" rx="8"/>
+    <rect x="5" y="5" width="190" height="190" fill="#d4a574" rx="4"/>
+    
+    <!-- Chess squares -->
+    <g>
+      <!-- Row 1 -->
+      <rect x="10" y="10" width="22" height="22" fill="#8b4513"/>
+      <rect x="34" y="10" width="22" height="22" fill="#f5deb3"/>
+      <rect x="58" y="10" width="22" height="22" fill="#8b4513"/>
+      <rect x="82" y="10" width="22" height="22" fill="#f5deb3"/>
+      <rect x="106" y="10" width="22" height="22" fill="#8b4513"/>
+      <rect x="130" y="10" width="22" height="22" fill="#f5deb3"/>
+      <rect x="154" y="10" width="22" height="22" fill="#8b4513"/>
+      <rect x="178" y="10" width="22" height="22" fill="#f5deb3"/>
+      
+      <!-- Row 2 -->
+      <rect x="10" y="34" width="22" height="22" fill="#f5deb3"/>
+      <rect x="34" y="34" width="22" height="22" fill="#8b4513"/>
+      <rect x="58" y="34" width="22" height="22" fill="#f5deb3"/>
+      <rect x="82" y="34" width="22" height="22" fill="#8b4513"/>
+      <rect x="106" y="34" width="22" height="22" fill="#f5deb3"/>
+      <rect x="130" y="34" width="22" height="22" fill="#8b4513"/>
+      <rect x="154" y="34" width="22" height="22" fill="#f5deb3"/>
+      <rect x="178" y="34" width="22" height="22" fill="#8b4513"/>
+      
+      <!-- Simplified remaining rows -->
+      <rect x="10" y="58" width="22" height="22" fill="#8b4513"/>
+      <rect x="34" y="58" width="22" height="22" fill="#f5deb3"/>
+      <rect x="58" y="58" width="22" height="22" fill="#8b4513"/>
+      <rect x="82" y="58" width="22" height="22" fill="#f5deb3"/>
+      <rect x="106" y="58" width="22" height="22" fill="#8b4513"/>
+      <rect x="130" y="58" width="22" height="22" fill="#f5deb3"/>
+      <rect x="154" y="58" width="22" height="22" fill="#8b4513"/>
+      <rect x="178" y="58" width="22" height="22" fill="#f5deb3"/>
+    </g>
+    
+    <!-- Trophy icon on board -->
+    <g transform="translate(100, 120)">
+      <path d="M -15 -10 L -10 -25 L 10 -25 L 15 -10 Z" fill="#fbbf24"/>
+      <circle cx="0" cy="-30" r="8" fill="#fbbf24"/>
+      <rect x="-3" y="-10" width="6" height="20" fill="#fbbf24"/>
+      <rect x="-20" y="10" width="40" height="8" rx="2" fill="#fbbf24"/>
+      <path d="M -20 -15 Q -30 -15 -30 -5 L -20 -5" fill="none" stroke="#fbbf24" stroke-width="3"/>
+      <path d="M 20 -15 Q 30 -15 30 -5 L 20 -5" fill="none" stroke="#fbbf24" stroke-width="3"/>
+    </g>
+  </g>
+  
+  <!-- Text -->
+  <text x="200" y="270" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white" text-anchor="middle">
+    Chess Event
+  </text>
+</svg>
