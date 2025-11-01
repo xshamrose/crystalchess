@@ -101,8 +101,9 @@ include __DIR__ . '/../../includes/header.php';
                         </p>
                     </div>
                     <div class="flex space-x-3">
-                        <a href="participants.php" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-                            Change Event
+                        <a href="/chess/crystalchess/modules/organizer/participants.php?event_id=<?= $event['event_id'] ?>" 
+                           class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                           View Participants
                         </a>
                         <a href="manage-events.php" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                             Back to Events

@@ -8,6 +8,8 @@ $auth = new Auth($pdo);
 $auth->requireLogin();
 $auth->requireRole(['admin']);
 
+include dirname(__DIR__) . '/organizer/create-event.php';
+
 $admin_id = $_SESSION['user_id'];
 $message = '';
 $error = '';
@@ -30,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                     
                 case 'cancel':
-                    $stmt = $pdo->prepare("UPDATE events SET status = 'cancelled' WHERE event_id = ?");
+                    $stmt = $pdo->prepare("UPDATE events SET event_status = 'cancelled' WHERE event_id = ?");
                     $stmt->execute([$event_id]);
                     $message = 'Event cancelled successfully.';
                     
@@ -64,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Filters
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-$status_filter = isset($_GET['status']) ? $_GET['status'] : '';
+$status_filter = isset($_GET['event_status']) ? $_GET['event_status'] : '';
 $organizer_filter = isset($_GET['organizer']) ? (int)$_GET['organizer'] : 0;
 
 // Pagination
@@ -83,7 +85,7 @@ if ($search) {
 }
 
 if ($status_filter) {
-    $where_conditions[] = "e.status = ?";
+    $where_conditions[] = "e.event_status = ?";
     $params[] = $status_filter;
 }
 
@@ -159,8 +161,8 @@ include __DIR__ . '/../../includes/header.php';
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">All Statuses</option>
+                    <select name="event_status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Status</option>
                         <option value="upcoming" <?php echo $status_filter === 'upcoming' ? 'selected' : ''; ?>>Upcoming</option>
                         <option value="in_progress" <?php echo $status_filter === 'in_progress' ? 'selected' : ''; ?>>In Progress</option>
                         <option value="completed" <?php echo $status_filter === 'completed' ? 'selected' : ''; ?>>Completed</option>
@@ -272,10 +274,10 @@ include __DIR__ . '/../../includes/header.php';
                                     'completed' => 'bg-gray-100 text-gray-800',
                                     'cancelled' => 'bg-red-100 text-red-800'
                                 ];
-                                $color = $status_colors[$event['status']] ?? 'bg-gray-100 text-gray-800';
+                                $color = $status_colors[$event['event_status']] ?? 'bg-gray-100 text-gray-800';
                                 ?>
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full <?php echo $color; ?>">
-                                    <?php echo ucfirst(str_replace('_', ' ', $event['status'])); ?>
+                                    <?php echo ucfirst(str_replace('_', ' ', $event['event_status'])); ?>
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -291,7 +293,7 @@ include __DIR__ . '/../../includes/header.php';
                                     </form>
                                     
                                     <!-- Cancel -->
-                                    <?php if ($event['status'] !== 'cancelled' && $event['status'] !== 'completed'): ?>
+                                    <?php if ($event['event_status'] !== 'cancelled' && $event['event_status'] !== 'completed'): ?>
                                     <form method="POST" class="inline" onsubmit="return confirm('Cancel this event?');">
                                         <input type="hidden" name="event_id" value="<?php echo $event['event_id']; ?>">
                                         <input type="hidden" name="action" value="cancel">
@@ -322,19 +324,19 @@ include __DIR__ . '/../../includes/header.php';
                     </div>
                     <div class="flex gap-2">
                         <?php if ($page > 1): ?>
-                        <a href="?page=<?php echo $page - 1; ?>&search=<?php echo urlencode($search); ?>&status=<?php echo $status_filter; ?>&organizer=<?php echo $organizer_filter; ?>" 
+                        <a href="?page=<?php echo $page - 1; ?>&search=<?php echo urlencode($search); ?>&event_status=<?php echo $status_filter; ?>&organizer=<?php echo $organizer_filter; ?>" 
                            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Previous</a>
                         <?php endif; ?>
                         
                         <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
-                        <a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search); ?>&status=<?php echo $status_filter; ?>&organizer=<?php echo $organizer_filter; ?>" 
+                        <a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search); ?>&event_status=<?php echo $status_filter; ?>&organizer=<?php echo $organizer_filter; ?>" 
                            class="px-3 py-1 border rounded <?php echo $i === $page ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 hover:bg-gray-50'; ?>">
                             <?php echo $i; ?>
                         </a>
                         <?php endfor; ?>
                         
                         <?php if ($page < $total_pages): ?>
-                        <a href="?page=<?php echo $page + 1; ?>&search=<?php echo urlencode($search); ?>&status=<?php echo $status_filter; ?>&organizer=<?php echo $organizer_filter; ?>" 
+                        <a href="?page=<?php echo $page + 1; ?>&search=<?php echo urlencode($search); ?>&event_status=<?php echo $status_filter; ?>&organizer=<?php echo $organizer_filter; ?>" 
                            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Next</a>
                         <?php endif; ?>
                     </div>

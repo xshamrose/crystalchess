@@ -20,7 +20,7 @@ $events_sql = "
     FROM events e
     LEFT JOIN bookings b ON e.event_id = b.event_id 
         AND b.booking_status IN ('confirmed', 'pending')
-    WHERE e.organizer_id = ? AND e.status IN ('upcoming', 'in_progress')
+    WHERE e.organizer_id = ? AND e.event_status IN ('upcoming', 'in_progress')
     GROUP BY e.event_id
     ORDER BY e.event_date ASC
 ";
@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $sent_count++;
                             
                             // Log notification
-                            $log_sql = "INSERT INTO notifications (user_id, event_id, notification_type, subject, message, status, sent_at) 
+                            $log_sql = "INSERT INTO notifications (user_id, event_id, notification_type, subject, message, notification_status, sent_at) 
                                        VALUES ((SELECT user_id FROM users WHERE email = ?), ?, 'email', ?, ?, 'sent', NOW())";
                             $stmt = $pdo->prepare($log_sql);
                             $stmt->execute([$recipient['email'], $event_id, $subject, $personalized_message]);

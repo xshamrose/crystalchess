@@ -24,11 +24,11 @@ $dateFrom = $_GET['date_from'] ?? '';
 $dateTo = $_GET['date_to'] ?? '';
 $feeMin = isset($_GET['fee_min']) ? floatval($_GET['fee_min']) : 0;
 $feeMax = isset($_GET['fee_max']) && $_GET['fee_max'] !== '' ? floatval($_GET['fee_max']) : 999999;
-$status = $_GET['status'] ?? 'upcoming';
+$status = $_GET['event_status'] ?? 'upcoming';
 
 // Build WHERE clause
-$whereConditions = ["e.status = :status"];
-$params = [':status' => $status];
+$whereConditions = ["e.event_status = :event_status"];
+$params = [':event_status' => $status];
 
 if (!empty($search)) {
     $whereConditions[] = "(e.event_name LIKE :search OR e.description LIKE :search)";
@@ -89,7 +89,7 @@ $stmt->execute();
 $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Get unique locations
-$locationsQuery = "SELECT DISTINCT location FROM events WHERE status = 'upcoming' ORDER BY location";
+$locationsQuery = "SELECT DISTINCT location FROM events WHERE event_status = 'upcoming' ORDER BY location";
 $locationsStmt = $db->query($locationsQuery);
 $locations = $locationsStmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -175,11 +175,11 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="mb-6 flex justify-between items-center">
         <p class="text-gray-600">Showing <?= count($events) ?> of <?= $totalEvents ?> events</p>
         <div class="flex gap-2">
-            <a href="<?php echo BASE_URL; ?>/browse-events?status=upcoming" 
+            <a href="<?php echo BASE_URL; ?>/browse-events?event_status=upcoming" 
                class="px-4 py-2 rounded-lg <?= $status === 'upcoming' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700' ?>">
                 Upcoming
             </a>
-            <a href="<?php echo BASE_URL; ?>/browse-events?status=completed" 
+            <a href="<?php echo BASE_URL; ?>/browse-events?event_status=completed" 
                class="px-4 py-2 rounded-lg <?= $status === 'completed' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700' ?>">
                 Past
             </a>

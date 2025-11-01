@@ -18,7 +18,7 @@ $featuredEvents = $db->query("
            (e.max_capacity - e.current_bookings) as available_slots
     FROM events e
     JOIN users u ON e.organizer_id = u.user_id
-    WHERE e.status = 'upcoming' 
+    WHERE e.event_status = 'upcoming' 
     AND e.event_date >= CURDATE()
     AND e.featured = 1
     ORDER BY e.event_date ASC
@@ -26,8 +26,8 @@ $featuredEvents = $db->query("
 ")->fetchAll();
 
 // Get statistics
-$totalEvents = $db->count('events', ['status' => 'upcoming']);
-$totalUsers = $db->count('users', ['status' => 'active']);
+$totalEvents = $db->count('events', ['event_status' => 'upcoming']);
+$totalUsers = $db->count('users', ['user_status' => 'active']);
 $totalBookings = $db->count('bookings', ['booking_status' => 'confirmed']);
 ?>
 

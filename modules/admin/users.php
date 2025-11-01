@@ -1,7 +1,7 @@
 <?php
 // modules/admin/users.php
-require_once '../../config/database.php';
-require_once '../../core/Auth.php';
+require_once './config/database.php';
+require_once './core/Auth.php';
 
 $auth = new Auth($pdo);
 $auth->requireLogin();
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 switch ($_POST['action']) {
                     case 'suspend':
-                        $stmt = $pdo->prepare("UPDATE users SET status = 'suspended' WHERE user_id = ?");
+                        $stmt = $pdo->prepare("UPDATE users SET user_status = 'suspended' WHERE user_id = ?");
                         $stmt->execute([$user_id]);
                         $message = 'User suspended successfully.';
                         
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         break;
                         
                     case 'activate':
-                        $stmt = $pdo->prepare("UPDATE users SET status = 'active' WHERE user_id = ?");
+                        $stmt = $pdo->prepare("UPDATE users SET user_status = 'active' WHERE user_id = ?");
                         $stmt->execute([$user_id]);
                         $message = 'User activated successfully.';
                         
@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Filters
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $role_filter = isset($_GET['role']) ? $_GET['role'] : '';
-$status_filter = isset($_GET['status']) ? $_GET['status'] : '';
+$status_filter = isset($_GET['user_status']) ? $_GET['user_status'] : '';
 
 // Pagination
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -104,7 +104,7 @@ if ($role_filter) {
 }
 
 if ($status_filter) {
-    $where_conditions[] = "status = ?";
+    $where_conditions[] = "user_status = ?";
     $params[] = $status_filter;
 }
 
@@ -118,7 +118,7 @@ $total_users = $count_stmt->fetch()['total'];
 $total_pages = ceil($total_users / $per_page);
 
 // Get users
-$sql = "SELECT u.user_id, u.full_name, u.email, u.phone, u.user_type, u.status, u.created_at, u.last_login,
+$sql = "SELECT u.user_id, u.full_name, u.email, u.phone, u.user_type, u.user_status, u.created_at, u.last_login,
         COUNT(DISTINCT b.booking_id) as booking_count,
         COUNT(DISTINCT e.event_id) as event_count
         FROM users u
@@ -132,8 +132,8 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $users = $stmt->fetchAll();
 
-include '../../includes/header.php';
-include '../../includes/nav.php';
+include './includes/header.php';
+#include './includes/nav.php';
 ?>
 
 <div class="min-h-screen bg-gray-50 py-8">
@@ -179,8 +179,8 @@ include '../../includes/nav.php';
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">All Statuses</option>
+                    <select name="user_status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="">All </option>
                         <option value="active" <?php echo $status_filter === 'active' ? 'selected' : ''; ?>>Active</option>
                         <option value="inactive" <?php echo $status_filter === 'inactive' ? 'selected' : ''; ?>>Inactive</option>
                         <option value="suspended" <?php echo $status_filter === 'suspended' ? 'selected' : ''; ?>>Suspended</option>
@@ -191,7 +191,7 @@ include '../../includes/nav.php';
                     <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
                         Filter
                     </button>
-                    <a href="users.php" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
+                    <a href="?" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
                         Clear
                     </a>
                 </div>
@@ -285,10 +285,10 @@ include '../../includes/nav.php';
                                     'inactive' => 'bg-gray-100 text-gray-800',
                                     'suspended' => 'bg-red-100 text-red-800'
                                 ];
-                                $color = $status_colors[$user['status']] ?? 'bg-gray-100 text-gray-800';
+                                $color = $status_colors[$user['user_status']] ?? 'bg-gray-100 text-gray-800';
                                 ?>
                                 <span class="px-2 py-1 text-xs font-semibold rounded-full <?php echo $color; ?>">
-                                    <?php echo ucfirst($user['status']); ?>
+                                    <?php echo ucfirst($user['user_status']); ?>
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -297,7 +297,7 @@ include '../../includes/nav.php';
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 <?php if ($user['user_id'] !== $admin_id): ?>
                                 <div class="flex items-center gap-2">
-                                    <?php if ($user['status'] === 'active'): ?>
+                                    <?php if ($user['user_status'] === 'active'): ?>
                                     <form method="POST" class="inline" onsubmit="return confirm('Suspend this user?');">
                                         <input type="hidden" name="user_id" value="<?php echo $user['user_id']; ?>">
                                         <input type="hidden" name="action" value="suspend">
@@ -336,19 +336,19 @@ include '../../includes/nav.php';
                     </div>
                     <div class="flex gap-2">
                         <?php if ($page > 1): ?>
-                        <a href="?page=<?php echo $page - 1; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo $role_filter; ?>&status=<?php echo $status_filter; ?>" 
+                        <a href="?page=<?php echo $page - 1; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo $role_filter; ?>&user_status=<?php echo $status_filter; ?>" 
                            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Previous</a>
                         <?php endif; ?>
                         
                         <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
-                        <a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo $role_filter; ?>&status=<?php echo $status_filter; ?>" 
+                        <a href="?page=<?php echo $i; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo $role_filter; ?>&user_status=<?php echo $status_filter; ?>" 
                            class="px-3 py-1 border rounded <?php echo $i === $page ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-300 hover:bg-gray-50'; ?>">
                             <?php echo $i; ?>
                         </a>
                         <?php endfor; ?>
                         
                         <?php if ($page < $total_pages): ?>
-                        <a href="?page=<?php echo $page + 1; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo $role_filter; ?>&status=<?php echo $status_filter; ?>" 
+                        <a href="?page=<?php echo $page + 1; ?>&search=<?php echo urlencode($search); ?>&role=<?php echo $role_filter; ?>&user_status=<?php echo $status_filter; ?>" 
                            class="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Next</a>
                         <?php endif; ?>
                     </div>
@@ -360,4 +360,4 @@ include '../../includes/nav.php';
     </div>
 </div>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include './includes/footer.php'; ?>

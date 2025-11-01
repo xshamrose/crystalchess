@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             $db = Database::getInstance();
             
-            $stmt = $db->prepare("SELECT user_id, full_name, email_verified FROM users WHERE email = ? AND status = 'active'");
+            $stmt = $db->prepare("SELECT user_id, full_name, email_verified FROM users WHERE email = ? AND user_status = 'active'");
             $stmt->execute([$email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             

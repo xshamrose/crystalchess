@@ -23,7 +23,7 @@ class BookingManager {
                 return ['success' => false, 'message' => 'Event not found'];
             }
             
-            if ($event['status'] !== 'upcoming') {
+            if ($event['event_status'] !== 'upcoming') {
                 return ['success' => false, 'message' => 'Event is not available for booking'];
             }
             

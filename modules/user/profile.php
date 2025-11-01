@@ -246,8 +246,8 @@ include __DIR__ . '/../../includes/header.php';
                         </div>
                         <div class="mt-2 flex items-center justify-between text-sm">
                             <span class="text-gray-500">Account Status</span>
-                            <span class="text-<?php echo $user['status'] === 'active' ? 'green' : 'gray'; ?>-600 capitalize">
-                                <?php echo htmlspecialchars($user['status']); ?>
+                            <span class="text-<?php echo $user['user_status'] === 'active' ? 'green' : 'gray'; ?>-600 capitalize">
+                                <?php echo htmlspecialchars($user['user_status']); ?>
                             </span>
                         </div>
                         <div class="mt-2 flex items-center justify-between text-sm">

@@ -41,9 +41,9 @@ if (isset($_GET['delete']) && isset($_GET['event_id'])) {
 }
 
 // Handle event status update
-if (isset($_GET['update_status']) && isset($_GET['event_id']) && isset($_GET['status'])) {
+if (isset($_GET['update_status']) && isset($_GET['event_id']) && isset($_GET['event_status'])) {
     $event_id = (int)$_GET['event_id'];
-    $new_status = $_GET['status'];
+    $new_status = $_GET['event_status'];
     $allowed_statuses = ['upcoming', 'in_progress', 'completed', 'cancelled'];
     
     if (in_array($new_status, $allowed_statuses)) {
@@ -52,7 +52,7 @@ if (isset($_GET['update_status']) && isset($_GET['event_id']) && isset($_GET['st
         $stmt->execute([$event_id, $organizer_id]);
         
         if ($stmt->fetch()) {
-            $update_sql = "UPDATE events SET status = ? WHERE event_id = ?";
+            $update_sql = "UPDATE events SET event_status = ? WHERE event_id = ?";
             $stmt = $pdo->prepare($update_sql);
             $stmt->execute([$new_status, $event_id]);
             $_SESSION['success_message'] = "Event status updated to " . ucfirst($new_status);
@@ -64,7 +64,7 @@ if (isset($_GET['update_status']) && isset($_GET['event_id']) && isset($_GET['st
 }
 
 // Fetch events with filters
-$filter_status = $_GET['status'] ?? 'all';
+$filter_status = $_GET['event_status'] ?? 'all';
 $search_query = $_GET['search'] ?? '';
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $per_page = 10;
@@ -74,7 +74,7 @@ $where_conditions = ["e.organizer_id = ?"];
 $params = [$organizer_id];
 
 if ($filter_status !== 'all') {
-    $where_conditions[] = "e.status = ?";
+    $where_conditions[] = "e.event_status = ?";
     $params[] = $filter_status;
 }
 
@@ -286,7 +286,7 @@ include __DIR__ . '/../../includes/header.php';
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
                                             <?php
-                                                echo match($event['status']) {
+                                                echo match($event['event_status']) {
                                                     'upcoming' => 'bg-green-100 text-green-800',
                                                     'in_progress' => 'bg-blue-100 text-blue-800',
                                                     'completed' => 'bg-gray-100 text-gray-800',
@@ -295,7 +295,7 @@ include __DIR__ . '/../../includes/header.php';
                                                 };
                                             ?>
                                         ">
-                                            <?= ucfirst(str_replace('_', ' ', $event['status'])) ?>
+                                            <?= ucfirst(str_replace('_', ' ', $event['event_status'])) ?>
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -337,7 +337,7 @@ include __DIR__ . '/../../includes/header.php';
                             </div>
                             <div class="flex space-x-2">
                                 <?php if ($page > 1): ?>
-                                    <a href="?page=<?= $page - 1 ?>&status=<?= $filter_status ?>&search=<?= urlencode($search_query) ?>"
+                                    <a href="?page=<?= $page - 1 ?>&event_status=<?= $filter_status ?>&search=<?= urlencode($search_query) ?>"
                                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                                         Previous
                                     </a>
@@ -347,7 +347,7 @@ include __DIR__ . '/../../includes/header.php';
                                     <?php if ($i == $page): ?>
                                         <span class="px-4 py-2 bg-blue-600 text-white rounded-lg"><?= $i ?></span>
                                     <?php elseif (abs($i - $page) <= 2 || $i == 1 || $i == $total_pages): ?>
-                                        <a href="?page=<?= $i ?>&status=<?= $filter_status ?>&search=<?= urlencode($search_query) ?>"
+                                        <a href="?page=<?= $i ?>&event_status=<?= $filter_status ?>&search=<?= urlencode($search_query) ?>"
                                            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                                             <?= $i ?>
                                         </a>
@@ -357,7 +357,7 @@ include __DIR__ . '/../../includes/header.php';
                                 <?php endfor; ?>
                                 
                                 <?php if ($page < $total_pages): ?>
-                                    <a href="?page=<?= $page + 1 ?>&status=<?= $filter_status ?>&search=<?= urlencode($search_query) ?>"
+                                    <a href="?page=<?= $page + 1 ?>&event_status=<?= $filter_status ?>&search=<?= urlencode($search_query) ?>"
                                        class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                                         Next
                                     </a>

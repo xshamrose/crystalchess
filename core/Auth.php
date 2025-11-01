@@ -74,7 +74,7 @@ class Auth
         try {
             // Find user by email
             $stmt = $this->db->prepare("
-                SELECT user_id, email, password_hash, full_name, user_type, status, email_verified 
+                SELECT user_id, email, password_hash, full_name, user_type, user_status, email_verified 
                 FROM users 
                 WHERE email = ? 
                 LIMIT 1
@@ -90,7 +90,7 @@ class Auth
             }
 
             // Check if account is active
-            if ($user['status'] !== 'active') {
+            if ($user['user_status'] !== 'active') {
                 return [
                     'success' => false,
                     'message' => 'Your account has been suspended. Please contact support.'
@@ -125,7 +125,7 @@ class Auth
                 'email' => $user['email'],
                 'full_name' => $user['full_name'],
                 'user_type' => $user['user_type'],
-                'status' => $user['status']
+                'user_status' => $user['user_status']
             ];
 
             // Update last login
@@ -178,7 +178,7 @@ class Auth
 
             // Insert user
             $stmt = $this->db->prepare("
-                INSERT INTO users (email, password_hash, full_name, phone, user_type, status, email_verified) 
+                INSERT INTO users (email, password_hash, full_name, phone, user_type, user_status, email_verified) 
                 VALUES (?, ?, ?, ?, ?, 'active', 0)
             ");
 
@@ -342,7 +342,7 @@ class Auth
 
         try {
             $stmt = $this->db->prepare("
-                SELECT user_id, email, full_name, phone, user_type, status, 
+                SELECT user_id, email, full_name, phone, user_type, user_status, 
                        email_verified, created_at, last_login, profile_image
                 FROM users 
                 WHERE user_id = ?

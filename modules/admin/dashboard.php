@@ -37,7 +37,7 @@ $total_events = $db->query("SELECT COUNT(*) AS total FROM events")->fetch()['tot
 $upcoming_events = $db->query("
     SELECT COUNT(*) AS upcoming 
     FROM events 
-    WHERE status = 'upcoming' AND event_date >= CURDATE()
+    WHERE event_status = 'upcoming' AND event_date >= CURDATE()
 ")->fetch()['upcoming'];
 
 // Total bookings
@@ -68,7 +68,7 @@ $pending_payments = $db->query("
 $user_roles = $db->query("
     SELECT user_type, COUNT(*) AS count 
     FROM users 
-    WHERE status = 'active' 
+    WHERE user_status = 'active' 
     GROUP BY user_type
 ")->fetchAll();
 
@@ -95,7 +95,7 @@ $top_organizers = $db->query("
     FROM users u
     LEFT JOIN events e ON u.user_id = e.organizer_id
     LEFT JOIN bookings b ON e.event_id = b.event_id
-    WHERE u.user_type = 'organizer' AND u.status = 'active'
+    WHERE u.user_type = 'organizer' AND u.user_status = 'active'
     GROUP BY u.user_id
     ORDER BY revenue DESC
     LIMIT 5

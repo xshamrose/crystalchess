@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sql = "INSERT INTO events (
                     organizer_id, event_name, description, event_date, event_time, 
                     location, venue_address, entry_fee, max_capacity, rules, 
-                    event_image, status, featured, current_bookings
+                    event_image, event_status, featured, current_bookings
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'upcoming', 0, 0)";
                 
                 $stmt = $pdo->prepare($sql);

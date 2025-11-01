@@ -42,7 +42,7 @@ if (!$event) {
     exit;
 }
 
-if ($event['status'] !== 'upcoming') {
+if ($event['event_status'] !== 'upcoming') {
     $_SESSION['error'] = 'This event is not available for booking.';
     header('Location: details.php?id=' . $eventId);
     exit;

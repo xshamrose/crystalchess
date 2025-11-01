@@ -135,7 +135,7 @@ try {
     
     // Create notification
     $db->query(
-        "INSERT INTO notifications (user_id, notification_type, subject, message, status)
+        "INSERT INTO notifications (user_id, notification_type, subject, message, notification_status)
          VALUES (?, 'email', ?, ?, 'sent')",
         [
             $booking['user_id'],

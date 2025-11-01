@@ -23,8 +23,8 @@ $organizer_id = $user['user_id'];
 $stats_query = "
     SELECT 
         COUNT(DISTINCT e.event_id) as total_events,
-        COUNT(DISTINCT CASE WHEN e.status = 'upcoming' THEN e.event_id END) as upcoming_events,
-        COUNT(DISTINCT CASE WHEN e.status = 'completed' THEN e.event_id END) as completed_events,
+        COUNT(DISTINCT CASE WHEN e.event_status = 'upcoming' THEN e.event_id END) as upcoming_events,
+        COUNT(DISTINCT CASE WHEN e.event_status = 'completed' THEN e.event_id END) as completed_events,
         COUNT(DISTINCT b.booking_id) as total_bookings,
         COALESCE(SUM(CASE WHEN b.payment_status = 'paid' THEN b.amount_paid ELSE 0 END), 0) as total_revenue,
         COUNT(DISTINCT CASE WHEN b.booking_status = 'confirmed' THEN b.booking_id END) as confirmed_bookings
@@ -217,7 +217,7 @@ include INCLUDES_PATH . '/header.php';
                                         <div class="text-right ml-4">
                                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
                                                 <?php
-                                                    echo match($event['status']) {
+                                                    echo match($event['event_status']) {
                                                         'upcoming' => 'bg-green-100 text-green-800',
                                                         'in_progress' => 'bg-blue-100 text-blue-800',
                                                         'completed' => 'bg-gray-100 text-gray-800',
@@ -226,7 +226,7 @@ include INCLUDES_PATH . '/header.php';
                                                     };
                                                 ?>
                                             ">
-                                                <?= ucfirst(str_replace('_', ' ', $event['status'])) ?>
+                                                <?= ucfirst(str_replace('_', ' ', $event['event_status'])) ?>
                                             </span>
                                             <div class="mt-3">
                                                 <div class="text-sm font-semibold text-gray-900">

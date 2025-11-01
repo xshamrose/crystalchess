@@ -96,15 +96,15 @@ require_once __DIR__ . '/../../includes/header.php';
 
                 <!-- Status Badge -->
                 <div class="absolute top-4 right-4">
-                    <?php if ($event['status'] === 'upcoming'): ?>
+                    <?php if ($event['event_status'] === 'upcoming'): ?>
                         <span class="bg-green-500 text-white px-4 py-2 rounded-full font-semibold shadow-lg">
                             <i class="fas fa-calendar-check mr-1"></i> Upcoming
                         </span>
-                    <?php elseif ($event['status'] === 'completed'): ?>
+                    <?php elseif ($event['event_status'] === 'completed'): ?>
                         <span class="bg-gray-500 text-white px-4 py-2 rounded-full font-semibold shadow-lg">
                             <i class="fas fa-flag-checkered mr-1"></i> Completed
                         </span>
-                    <?php elseif ($event['status'] === 'cancelled'): ?>
+                    <?php elseif ($event['event_status'] === 'cancelled'): ?>
                         <span class="bg-red-500 text-white px-4 py-2 rounded-full font-semibold shadow-lg">
                             <i class="fas fa-times-circle mr-1"></i> Cancelled
                         </span>
@@ -151,7 +151,7 @@ require_once __DIR__ . '/../../includes/header.php';
                 </div>
 
                 <!-- Alerts -->
-                <?php if (!$isPast && $event['status'] === 'upcoming'): ?>
+                <?php if (!$isPast && $event['event_status'] === 'upcoming'): ?>
                     <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded">
                         <div class="flex items-center">
                             <i class="fas fa-info-circle text-blue-500 text-xl mr-3"></i>
@@ -250,7 +250,7 @@ require_once __DIR__ . '/../../includes/header.php';
             </div>
 
             <!-- Booking Actions -->
-            <?php if ($event['status'] === 'upcoming' && $event['available_slots'] > 0): ?>
+            <?php if ($event['event_status'] === 'upcoming' && $event['available_slots'] > 0): ?>
                 <?php if (Auth::check()): ?>
                     <?php if ($userBooked): ?>
                         <div class="bg-green-50 border-2 border-green-500 p-4 mb-3 text-center rounded-lg">
