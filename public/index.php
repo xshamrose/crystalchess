@@ -19,8 +19,6 @@ $featuredEvents = $db->query("
     FROM events e
     JOIN users u ON e.organizer_id = u.user_id
     WHERE e.event_status = 'upcoming' 
-    AND e.event_date >= CURDATE()
-    AND e.featured = 1
     ORDER BY e.event_date ASC
     LIMIT 6
 ")->fetchAll();

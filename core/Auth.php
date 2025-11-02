@@ -4,6 +4,8 @@
  * Crystal Chess Tournament Booking Platform
  * File: core/Auth.php
  */
+require_once __DIR__ . '/../config/config.php';
+
 
 class Auth
 {

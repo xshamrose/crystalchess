@@ -13,5 +13,5 @@ require_once __DIR__ . '/../../core/Auth.php';
 Auth::logout();
 
 // Redirect to home page
-header('Location: ' . BASE_URL . '?logged_out=1');
+header('Location: ' . BASE_URL . '/home?logged_out=1');
 exit;

@@ -8,7 +8,7 @@ $auth = new Auth($pdo);
 $auth->requireLogin();
 $auth->requireRole(['admin']);
 
-include dirname(__DIR__) . '/organizer/create-event.php';
+#include dirname(__DIR__) . '/organizer/create-event.php';
 
 $admin_id = $_SESSION['user_id'];
 $message = '';
@@ -131,9 +131,15 @@ include __DIR__ . '/../../includes/header.php';
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Event Management</h1>
-            <p class="text-gray-600 mt-1">Manage all events across the platform</p>
+        <div class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Event Management</h1>
+                <p class="text-gray-600 mt-1">Manage all events across the platform</p>
+            </div>
+            <a href="<?php echo BASE_URL; ?>/modules/organizer/create-event.php" 
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+                + Create New Event
+            </a>
         </div>
 
         <!-- Messages -->
@@ -282,6 +288,11 @@ include __DIR__ . '/../../includes/header.php';
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 <div class="flex flex-col gap-2">
+                                    <!-- Edit Event -->
+                                    <a href="<?php echo BASE_URL; ?>/admin-edit-event?id=<?php echo $event['event_id']; ?>"
+                                    class="text-blue-600 hover:text-blue-800 text-xs font-medium">
+                                        Edit
+                                    </a>
                                     <!-- Feature/Unfeature -->
                                     <form method="POST" class="inline">
                                         <input type="hidden" name="event_id" value="<?php echo $event['event_id']; ?>">

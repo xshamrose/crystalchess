@@ -105,7 +105,7 @@ $userName = $_SESSION['user_name'] ?? 'User';
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
-                            <div class="dropdown-menu w-48 bg-white rounded-md shadow-lg py-1 border border-gray-100">
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-focus-within:block">
                                 <a href="<?php echo BASE_URL; ?>/admin-dashboard" 
                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     📊 Dashboard
@@ -141,7 +141,7 @@ $userName = $_SESSION['user_name'] ?? 'User';
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="dropdown-menu w-48 bg-white rounded-md shadow-lg py-1 border border-gray-100">
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-focus-within:block">
                             <a href="<?php echo BASE_URL; ?>/profile" 
                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                 👤 Profile

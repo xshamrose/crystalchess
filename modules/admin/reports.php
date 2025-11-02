@@ -95,7 +95,7 @@ $status_stmt->execute([$start_date, $end_date]);
 $status_distribution = $status_stmt->fetchAll();
 
 include '../../includes/header.php';
-include '../../includes/nav.php';
+#include '../../includes/nav.php';
 ?>
 
 <div class="min-h-screen bg-gray-50 py-8">
