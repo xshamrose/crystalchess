@@ -28,7 +28,7 @@ define('UPLOADS_PATH', ROOT_PATH . '/uploads');
 define('ASSETS_PATH', ROOT_PATH . '/assets');
 
 // URL Configuration
-define('BASE_URL', 'http://localhost:8000'); // ✅ FIXED
+define('BASE_URL', 'http://localhost:8000'); 
 define('ASSETS_URL', BASE_URL . '/assets');
 define('UPLOADS_URL', BASE_URL . '/uploads');
 

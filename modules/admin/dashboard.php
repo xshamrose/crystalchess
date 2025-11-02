@@ -262,13 +262,13 @@ include __DIR__ . '/../../includes/header.php';
 
         <!-- Quick Actions -->
         <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <a href="users.php" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-center font-medium transition">
+            <a href="modules/admin/users.php" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-center font-medium transition">
                 Manage Users
             </a>
-            <a href="events.php" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg text-center font-medium transition">
+            <a href="modules/admin/events.php" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg text-center font-medium transition">
                 Manage Events
             </a>
-            <a href="reports.php" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg text-center font-medium transition">
+            <a href="modules/admin/reports.php" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg text-center font-medium transition">
                 View Reports
             </a>
         </div>

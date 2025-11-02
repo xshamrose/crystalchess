@@ -1,7 +1,7 @@
 <?php
 // modules/admin/users.php
-require_once './config/database.php';
-require_once './core/Auth.php';
+require_once __DIR__ .  '/../../config/database.php';
+require_once __DIR__ .  '/../../core/Auth.php';
 
 $auth = new Auth($pdo);
 $auth->requireLogin();
@@ -132,7 +132,7 @@ $stmt = $pdo->prepare($sql);
 $stmt->execute($params);
 $users = $stmt->fetchAll();
 
-include './includes/header.php';
+include __DIR__ . '/../../includes/header.php';
 #include './includes/nav.php';
 ?>
 
@@ -360,4 +360,4 @@ include './includes/header.php';
     </div>
 </div>
 
-<?php include './includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>
