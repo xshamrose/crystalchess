@@ -15,9 +15,9 @@ define('ENVIRONMENT', 'development'); // Change to 'production' for live site
 
 // Site Configuration
 define('SITE_NAME', 'Crystal Chess');
-define('SITE_URL', 'http://localhost:8000'); // ✅ FIXED - matches your setup
-define('SITE_EMAIL', 'info@crystalchess.com');
-define('SITE_PHONE', '+1234567890');
+define('SITE_URL', 'http://localhost:8000'); 
+define('SITE_EMAIL', 'support@crystalchess.com');
+define('SITE_PHONE', '+91 9841523423');
 
 // Path Configuration
 define('ROOT_PATH', dirname(__DIR__));
@@ -65,7 +65,7 @@ define('TWILIO_TOKEN', '');
 define('TWILIO_FROM', '');
 
 // Timezone
-date_default_timezone_set('America/New_York'); // Update to your timezone
+date_default_timezone_set('Asia/Kolkata'); 
 
 // Error Reporting
 if (ENVIRONMENT === 'development') {

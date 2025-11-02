@@ -100,7 +100,7 @@
                     <ul class="space-y-3">
                         <li class="flex items-start">
                             <i class="fas fa-map-marker-alt text-indigo-400 mt-1 mr-3"></i>
-                            <span class="text-gray-400 text-sm">123 Chess Street, New York, NY 10001</span>
+                            <span class="text-gray-400 text-sm">No.5, Sathyamurthy road, Perungalathur, chennai - 600063</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone text-indigo-400 mr-3"></i>
