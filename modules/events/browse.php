@@ -215,11 +215,11 @@ require_once __DIR__ . '/../../includes/header.php';
             <span class="font-semibold text-gray-800"><?= $totalEvents ?></span> tournaments
         </p>
         <div class="flex gap-2">
-            <a href="<?php echo BASE_URL; ?>/browse-events?status=upcoming" 
+            <a href="<?php echo BASE_URL; ?>/browse-events?event_status=upcoming" 
                class="px-4 py-2 rounded-lg <?= $status === 'upcoming' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700' ?>">
                 Upcoming
             </a>
-            <a href="<?php echo BASE_URL; ?>/browse-events?status=completed" 
+            <a href="<?php echo BASE_URL; ?>/browse-events?event_status=completed" 
                class="px-4 py-2 rounded-lg <?= $status === 'completed' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700' ?>">
                 Past
             </a>
