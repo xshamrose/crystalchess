@@ -1,40 +1,55 @@
 <?php
-// modules/events/checkout.php
-session_start();
+/**
+ * Checkout Page
+ * File: modules/events/checkout.php
+ */
+
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../core/Auth.php';
 require_once __DIR__ . '/../../core/Database.php';
 
+// Start session safely
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $auth = new Auth();
-$db = new Database();
+$auth->requireLogin();
 
-// Check if user is logged in
-if (!$auth->isLoggedIn()) {
-    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-    header('Location: ' . BASE_URL . '/modules/user/login.php');
+$db = Database::getInstance();
+$userId = $_SESSION['user_id'] ?? 0;
+
+// Get booking ID from URL or session
+$bookingId = isset($_GET['booking_id']) ? intval($_GET['booking_id']) : ($_SESSION['pending_booking_id'] ?? 0);
+
+if ($bookingId === 0) {
+    setFlash('error', 'No pending booking found.');
+    header('Location: ' . BASE_URL . '/browse-events');
     exit;
 }
 
-$user = $auth->getUser();
-
-// Get booking ID from session (created during book.php)
-if (!isset($_SESSION['pending_booking_id'])) {
-    header('Location: ' . BASE_URL . '/modules/events/browse.php');
-    exit;
-}
-
-$bookingId = $_SESSION['pending_booking_id'];
-
-// Get booking details
-$sql = "SELECT b.*, e.event_name, e.event_date, e.event_time, e.location, e.entry_fee
-        FROM bookings b
-        JOIN events e ON b.event_id = e.event_id
-        WHERE b.booking_id = ? AND b.user_id = ?";
-
-$booking = $db->query($sql, [$bookingId, $user['user_id']])->fetch();
+// Get booking details with event info
+$db->query("
+    SELECT b.*, 
+           e.event_name, e.event_date, e.event_time, e.location, 
+           e.venue_address, e.entry_fee
+    FROM bookings b
+    JOIN events e ON b.event_id = e.event_id
+    WHERE b.booking_id = :booking_id AND b.user_id = :user_id
+");
+$db->bind(':booking_id', $bookingId);
+$db->bind(':user_id', $userId);
+$booking = $db->fetch();
 
 if (!$booking) {
-    header('Location: ' . BASE_URL . '/modules/events/browse.php');
+    setFlash('error', 'Booking not found or unauthorized access.');
+    header('Location: ' . BASE_URL . '/browse-events');
+    exit;
+}
+
+// If already paid, redirect to confirmation
+if ($booking['payment_status'] === 'completed') {
+    header('Location: ' . BASE_URL . '/booking-confirmation?ref=' . $booking['booking_reference']);
     exit;
 }
 
@@ -56,12 +71,15 @@ require_once __DIR__ . '/../../includes/header.php';
             <!-- Booking Summary -->
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <h2 class="text-xl font-semibold mb-4">Booking Summary</h2>
+                    <h2 class="text-xl font-semibold mb-4 flex items-center">
+                        <i class="fas fa-file-invoice text-blue-600 mr-2"></i>
+                        Booking Summary
+                    </h2>
                     
                     <div class="space-y-4">
                         <div class="flex justify-between py-3 border-b">
                             <span class="text-gray-600">Event</span>
-                            <span class="font-semibold"><?php echo htmlspecialchars($booking['event_name']); ?></span>
+                            <span class="font-semibold text-right"><?php echo htmlspecialchars($booking['event_name']); ?></span>
                         </div>
                         
                         <div class="flex justify-between py-3 border-b">
@@ -71,15 +89,15 @@ require_once __DIR__ . '/../../includes/header.php';
                         
                         <div class="flex justify-between py-3 border-b">
                             <span class="text-gray-600">Date & Time</span>
-                            <span class="font-semibold">
-                                <?php echo date('M d, Y', strtotime($booking['event_date'])); ?> 
-                                at <?php echo date('h:i A', strtotime($booking['event_time'])); ?>
+                            <span class="font-semibold text-right">
+                                <?php echo date('M d, Y', strtotime($booking['event_date'])); ?><br>
+                                <span class="text-sm text-gray-600"><?php echo date('h:i A', strtotime($booking['event_time'])); ?></span>
                             </span>
                         </div>
                         
                         <div class="flex justify-between py-3 border-b">
                             <span class="text-gray-600">Location</span>
-                            <span class="font-semibold"><?php echo htmlspecialchars($booking['location']); ?></span>
+                            <span class="font-semibold text-right"><?php echo htmlspecialchars($booking['location']); ?></span>
                         </div>
                         
                         <div class="flex justify-between py-3 border-b">
@@ -93,7 +111,10 @@ require_once __DIR__ . '/../../includes/header.php';
 
                 <!-- Payment Method -->
                 <div class="bg-white rounded-lg shadow-sm p-6">
-                    <h2 class="text-xl font-semibold mb-4">Payment Method</h2>
+                    <h2 class="text-xl font-semibold mb-4 flex items-center">
+                        <i class="fas fa-credit-card text-blue-600 mr-2"></i>
+                        Payment Method
+                    </h2>
                     
                     <form id="paymentForm" method="POST" action="<?php echo BASE_URL; ?>/api/payments/process.php">
                         <input type="hidden" name="booking_id" value="<?php echo $bookingId; ?>">
@@ -152,8 +173,8 @@ require_once __DIR__ . '/../../includes/header.php';
                             <label class="flex items-start">
                                 <input type="checkbox" id="termsAccept" required class="mt-1 mr-3">
                                 <span class="text-sm text-gray-600">
-                                    I agree to the <a href="#" class="text-blue-600 hover:underline">Terms & Conditions</a> 
-                                    and <a href="#" class="text-blue-600 hover:underline">Cancellation Policy</a>
+                                    I agree to the <a href="<?= BASE_URL ?>/pages/terms.php" target="_blank" class="text-blue-600 hover:underline">Terms & Conditions</a> 
+                                    and <a href="<?= BASE_URL ?>/pages/refund.php" target="_blank" class="text-blue-600 hover:underline">Cancellation Policy</a>
                                 </span>
                             </label>
                         </div>
@@ -161,8 +182,12 @@ require_once __DIR__ . '/../../includes/header.php';
                         <!-- Submit Button -->
                         <button type="submit" id="payBtn" 
                                 class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed">
-                            <span id="payBtnText">Pay $<?php echo number_format($booking['amount_paid'], 2); ?></span>
-                            <span id="payBtnLoading" class="hidden">Processing...</span>
+                            <span id="payBtnText">
+                                <i class="fas fa-lock mr-2"></i>Pay $<?php echo number_format($booking['amount_paid'], 2); ?>
+                            </span>
+                            <span id="payBtnLoading" class="hidden">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>Processing...
+                            </span>
                         </button>
                     </form>
                 </div>
@@ -250,7 +275,7 @@ document.getElementById('paymentForm').addEventListener('submit', async function
         const result = await response.json();
         
         if (result.success) {
-            window.location.href = '<?php echo BASE_URL; ?>/modules/events/booking-confirmation.php?ref=' + result.booking_reference;
+            window.location.href = '<?php echo BASE_URL; ?>/booking-confirmation?ref=' + result.booking_reference;
         } else {
             alert(result.message || 'Payment failed. Please try again.');
             payBtn.disabled = false;
@@ -258,6 +283,7 @@ document.getElementById('paymentForm').addEventListener('submit', async function
             payBtnLoading.classList.add('hidden');
         }
     } catch (error) {
+        console.error('Payment error:', error);
         alert('An error occurred. Please try again.');
         payBtn.disabled = false;
         payBtnText.classList.remove('hidden');

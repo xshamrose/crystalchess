@@ -1,32 +1,47 @@
 <?php
-// modules/events/booking-confirmation.php
-session_start();
+/**
+ * Booking Confirmation Page
+ * File: modules/events/booking-confirmation.php
+ */
+
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../core/Auth.php';
-require_once __DIR__ . '/../../core/BookingManager.php';
+require_once __DIR__ . '/../../core/Database.php';
+
+// Start session safely
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $auth = new Auth();
-$bookingManager = new BookingManager();
+$auth->requireLogin();
 
-// Check if user is logged in
-if (!$auth->isLoggedIn()) {
-    header('Location: ' . BASE_URL . '/modules/user/login.php');
-    exit;
-}
+$db = Database::getInstance();
 
 // Get booking reference from URL
 $bookingReference = $_GET['ref'] ?? '';
 
 if (empty($bookingReference)) {
-    header('Location: ' . BASE_URL . '/modules/events/browse.php');
+    setFlash('error', 'Invalid booking reference.');
+    header('Location: ' . BASE_URL . '/browse-events');
     exit;
 }
 
 // Get booking details
-$booking = $bookingManager->getBookingByReference($bookingReference);
+$db->query("
+    SELECT b.*, 
+           e.event_name, e.event_date, e.event_time, 
+           e.location, e.venue_address
+    FROM bookings b
+    JOIN events e ON b.event_id = e.event_id
+    WHERE b.booking_reference = :ref
+");
+$db->bind(':ref', $bookingReference);
+$booking = $db->fetch();
 
 if (!$booking) {
-    header('Location: ' . BASE_URL . '/modules/events/browse.php');
+    setFlash('error', 'Booking not found.');
+    header('Location: ' . BASE_URL . '/browse-events');
     exit;
 }
 
@@ -41,13 +56,13 @@ require_once __DIR__ . '/../../includes/header.php';
     <div class="max-w-3xl mx-auto px-4">
         
         <!-- Success Message -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-green-500 rounded-full mb-4">
+        <div class="text-center mb-8 animate-fade-in">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-green-500 rounded-full mb-4 shadow-lg">
                 <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                 </svg>
             </div>
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">🎉 Booking Confirmed!</h1>
             <p class="text-lg text-gray-600">Your tournament booking has been successfully completed</p>
         </div>
 
@@ -56,12 +71,12 @@ require_once __DIR__ . '/../../includes/header.php';
             <!-- Header with Reference -->
             <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
                 <div class="text-center">
-                    <div class="text-sm font-medium mb-2">Booking Reference</div>
+                    <div class="text-sm font-medium mb-2 opacity-90">Booking Reference</div>
                     <div class="text-3xl font-bold tracking-wider font-mono">
                         <?php echo htmlspecialchars($booking['booking_reference']); ?>
                     </div>
                     <div class="text-sm mt-2 opacity-90">
-                        Please save this reference number for your records
+                        📧 Confirmation email sent to <?php echo htmlspecialchars($booking['participant_email']); ?>
                     </div>
                 </div>
             </div>
@@ -73,53 +88,47 @@ require_once __DIR__ . '/../../includes/header.php';
                 <div class="space-y-4">
                     <!-- Event Name -->
                     <div class="flex items-start">
-                        <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                            </svg>
+                        <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-chess text-blue-600"></i>
                         </div>
                         <div class="flex-1">
                             <div class="text-sm text-gray-500">Event Name</div>
-                            <div class="font-semibold text-gray-900"><?php echo htmlspecialchars($booking['event_name']); ?></div>
+                            <div class="font-semibold text-gray-900 text-lg"><?php echo htmlspecialchars($booking['event_name']); ?></div>
                         </div>
                     </div>
 
                     <!-- Participant -->
                     <div class="flex items-start">
-                        <div class="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
+                        <div class="flex-shrink-0 w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-user text-green-600"></i>
                         </div>
                         <div class="flex-1">
                             <div class="text-sm text-gray-500">Participant</div>
                             <div class="font-semibold text-gray-900"><?php echo htmlspecialchars($booking['participant_name']); ?></div>
+                            <div class="text-sm text-gray-600">Age: <?php echo htmlspecialchars($booking['participant_age']); ?> | <?php echo ucfirst($booking['player_type']); ?></div>
                         </div>
                     </div>
 
                     <!-- Date & Time -->
                     <div class="flex items-start">
-                        <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
+                        <div class="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-calendar text-purple-600"></i>
                         </div>
                         <div class="flex-1">
                             <div class="text-sm text-gray-500">Date & Time</div>
                             <div class="font-semibold text-gray-900">
-                                <?php echo date('l, F j, Y', strtotime($booking['event_date'])); ?><br>
-                                <span class="text-sm">at <?php echo date('h:i A', strtotime($booking['event_time'])); ?></span>
+                                <?php echo date('l, F j, Y', strtotime($booking['event_date'])); ?>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                at <?php echo date('h:i A', strtotime($booking['event_time'])); ?>
                             </div>
                         </div>
                     </div>
 
                     <!-- Location -->
                     <div class="flex items-start">
-                        <div class="flex-shrink-0 w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
+                        <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-map-marker-alt text-red-600"></i>
                         </div>
                         <div class="flex-1">
                             <div class="text-sm text-gray-500">Location</div>
@@ -132,14 +141,13 @@ require_once __DIR__ . '/../../includes/header.php';
 
                     <!-- Amount Paid -->
                     <div class="flex items-start pt-4 border-t">
-                        <div class="flex-shrink-0 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
+                        <div class="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-dollar-sign text-yellow-600"></i>
                         </div>
                         <div class="flex-1">
                             <div class="text-sm text-gray-500">Amount Paid</div>
                             <div class="text-2xl font-bold text-green-600">$<?php echo number_format($booking['amount_paid'], 2); ?></div>
+                            <div class="text-xs text-gray-500 mt-1">Payment Status: <span class="text-green-600 font-semibold">Completed</span></div>
                         </div>
                     </div>
                 </div>
@@ -149,26 +157,24 @@ require_once __DIR__ . '/../../includes/header.php';
         <!-- Next Steps -->
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
             <h3 class="text-lg font-semibold text-blue-900 mb-3 flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
+                <i class="fas fa-info-circle mr-2"></i>
                 What's Next?
             </h3>
             <ul class="space-y-2 text-sm text-blue-900">
                 <li class="flex items-start">
-                    <span class="mr-2">✓</span>
+                    <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
                     <span>You will receive a confirmation email shortly with all the details</span>
                 </li>
                 <li class="flex items-start">
-                    <span class="mr-2">✓</span>
+                    <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
                     <span>A reminder email will be sent 2 days before the event</span>
                 </li>
                 <li class="flex items-start">
-                    <span class="mr-2">✓</span>
+                    <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
                     <span>Please arrive 15 minutes early on the event day</span>
                 </li>
                 <li class="flex items-start">
-                    <span class="mr-2">✓</span>
+                    <i class="fas fa-check text-green-600 mr-2 mt-1"></i>
                     <span>Bring a valid ID and your booking reference number</span>
                 </li>
             </ul>
@@ -177,27 +183,21 @@ require_once __DIR__ . '/../../includes/header.php';
         <!-- Actions -->
         <div class="bg-white rounded-lg shadow-sm p-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <a href="<?php echo BASE_URL; ?>/modules/user/booking-history.php" 
-                   class="flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
+                <a href="<?php echo BASE_URL; ?>/booking-history" 
+                   class="flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-md">
+                    <i class="fas fa-history mr-2"></i>
                     View Bookings
                 </a>
                 
-                <a href="<?php echo BASE_URL; ?>/modules/events/browse.php" 
+                <a href="<?php echo BASE_URL; ?>/browse-events" 
                    class="flex items-center justify-center px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+                    <i class="fas fa-search mr-2"></i>
                     Browse Events
                 </a>
                 
                 <button onclick="window.print()" 
                         class="flex items-center justify-center px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                    </svg>
+                    <i class="fas fa-print mr-2"></i>
                     Print Receipt
                 </button>
             </div>
@@ -205,13 +205,37 @@ require_once __DIR__ . '/../../includes/header.php';
 
         <!-- Help Section -->
         <div class="text-center mt-8 text-gray-600">
-            <p>Need help? Contact us at <a href="mailto:support@crystalchess.com" class="text-blue-600 hover:underline">support@crystalchess.com</a></p>
+            <p class="text-sm">
+                Need help? Contact us at 
+                <a href="mailto:crystalschess@gmail.com" class="text-blue-600 hover:underline font-medium">
+                    crystalschess@gmail.com
+                </a>
+                or call 
+                <a href="tel:+919884423423" class="text-blue-600 hover:underline font-medium">
+                    +91 9884423423
+                </a>
+            </p>
         </div>
 
     </div>
 </div>
 
 <style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out;
+    }
+
     @media print {
         body * {
             visibility: hidden;
@@ -226,6 +250,9 @@ require_once __DIR__ . '/../../includes/header.php';
         }
         button, a {
             display: none !important;
+        }
+        .bg-gradient-to-br {
+            background: white !important;
         }
     }
 </style>
