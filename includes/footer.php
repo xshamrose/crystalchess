@@ -54,10 +54,13 @@
                     <h3 class="text-lg font-semibold mb-4 text-white">Contact Us</h3>
                     <ul class="space-y-3">
 <<<<<<< HEAD
+<<<<<<< HEAD
                         <li class="flex items-start">
                             <i class="fas fa-map-marker-alt text-indigo-400 mt-1 mr-3"></i>
                             <span class="text-gray-400 text-sm">No.5, Sathyamurthy road, Perungalathur, chennai - 600063</span>
 =======
+=======
+>>>>>>> 855086bd2d891b4da5a7c229897ea5adf8eedcf6
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-phone text-indigo-400 flex-shrink-0 mt-1"></i>
                             <div class="text-sm">
@@ -68,7 +71,10 @@
                                     +91 9787286554
                                 </a>
                             </div>
+<<<<<<< HEAD
 >>>>>>> ce60d72556b16a471393f7b4823c6d7c78069cba
+=======
+>>>>>>> 855086bd2d891b4da5a7c229897ea5adf8eedcf6
                         </li>
                         <li class="flex items-start space-x-3">
                             <i class="fas fa-envelope text-indigo-400 flex-shrink-0 mt-1"></i>

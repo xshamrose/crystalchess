@@ -1,11 +1,16 @@
 <?php
 <<<<<<< HEAD
+<<<<<<< HEAD
 require_once  __DIR__ . '/../../config/database.php';
 require_once  __DIR__ . '/../../core/Auth.php';
 =======
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../core/Auth.php';
 >>>>>>> ce60d72556b16a471393f7b4823c6d7c78069cba
+=======
+require_once  __DIR__ . '/../../config/database.php';
+require_once  __DIR__ . '/../../core/Auth.php';
+>>>>>>> 855086bd2d891b4da5a7c229897ea5adf8eedcf6
 
 Auth::requireLogin();
 $user = Auth::getUser();
@@ -84,10 +89,14 @@ try {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 include  __DIR__ . '/../../includes/header.php';
 =======
 include __DIR__ . '/../../includes/header.php';
 >>>>>>> ce60d72556b16a471393f7b4823c6d7c78069cba
+=======
+include  __DIR__ . '/../../includes/header.php';
+>>>>>>> 855086bd2d891b4da5a7c229897ea5adf8eedcf6
 ?>
 
 <div class="min-h-screen bg-gray-50 py-8">
@@ -101,10 +110,14 @@ include __DIR__ . '/../../includes/header.php';
                     <p class="text-gray-600 mt-2">View and manage all your tournament bookings</p>
                 </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
                 <a href="<?php echo BASE_URL; ?>/organizer-dashboard" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
 =======
                 <a href="dashboard" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
 >>>>>>> ce60d72556b16a471393f7b4823c6d7c78069cba
+=======
+                <a href="<?php echo BASE_URL; ?>/organizer-dashboard" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+>>>>>>> 855086bd2d891b4da5a7c229897ea5adf8eedcf6
                     <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
@@ -454,7 +467,11 @@ document.getElementById('cancelModal').addEventListener('click', function(e) {
 </script>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php include  __DIR__ . '/../../includes/footer.php'; ?>
 =======
 <?php include __DIR__ . '/../../includes/footer.php'; ?>
 >>>>>>> ce60d72556b16a471393f7b4823c6d7c78069cba
+=======
+<?php include  __DIR__ . '/../../includes/footer.php'; ?>
+>>>>>>> 855086bd2d891b4da5a7c229897ea5adf8eedcf6
