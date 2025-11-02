@@ -29,12 +29,100 @@ $featuredEvents = $db->query("
 $totalEvents = $db->count('events', ['event_status' => 'upcoming']);
 $totalUsers = $db->count('users', ['user_status' => 'active']);
 $totalBookings = $db->count('bookings', ['booking_status' => 'confirmed']);
+
+// Define classes data
+$classes = [
+    [
+        'name' => 'Chess',
+        'level' => 'Beginner',
+        'description' => 'Learn the fundamentals of chess, from piece movement to basic checkmates. For all levels.',
+        'image' => 'chess.jpg',
+        'icon' => 'fa-chess'
+    ],
+    [
+        'name' => 'Abacus',
+        'level' => 'All Levels',
+        'description' => 'Master the art of mental calculation and improve concentration with the abacus.',
+        'image' => 'abacus.jpg',
+        'icon' => 'fa-calculator'
+    ],
+    [
+        'name' => 'Western Dance',
+        'level' => 'All Levels',
+        'description' => 'Express yourself through movement with our energetic Western dance classes.',
+        'image' => 'dance.jpg',
+        'icon' => 'fa-music'
+    ],
+    [
+        'name' => 'Drawing',
+        'level' => 'All Levels',
+        'description' => 'Unleash your creativity and learn various drawing techniques from our experienced artists.',
+        'image' => 'drawing.jpg',
+        'icon' => 'fa-palette'
+    ],
+    [
+        'name' => 'Handwriting',
+        'level' => 'All Levels',
+        'description' => 'Improve your penmanship and develop beautiful, legible handwriting.',
+        'image' => 'handwriting.jpg',
+        'icon' => 'fa-pen'
+    ],
+    [
+        'name' => 'Hindi',
+        'level' => 'All Levels',
+        'description' => 'Learn to speak, read, and write Hindi with our comprehensive language course.',
+        'image' => 'hindi.jpg',
+        'icon' => 'fa-language'
+    ],
+    [
+        'name' => 'Karate',
+        'level' => 'All Levels',
+        'description' => 'Build discipline, confidence, and self-defense skills in our traditional karate class.',
+        'image' => 'karate.jpg',
+        'icon' => 'fa-fist-raised'
+    ],
+    [
+        'name' => 'Keyboard',
+        'level' => 'All Levels',
+        'description' => 'Learn to play the keyboard, from reading music to performing your favorite songs.',
+        'image' => 'keyboard.jpg',
+        'icon' => 'fa-keyboard'
+    ],
+    [
+        'name' => 'Spoken English',
+        'level' => 'All Levels',
+        'description' => 'Enhance your fluency, pronunciation, and confidence in speaking English.',
+        'image' => 'english.jpg',
+        'icon' => 'fa-comments'
+    ],
+    [
+        'name' => 'Silambam',
+        'level' => 'All Levels',
+        'description' => 'Discover the ancient Tamil martial art of Silambam, focusing on staff-fighting techniques.',
+        'image' => 'silambam.jpg',
+        'icon' => 'fa-running'
+    ],
+    [
+        'name' => 'Vedic Maths',
+        'level' => 'All Levels',
+        'description' => 'Unlock high-speed mental math techniques with our Vedic Maths course.',
+        'image' => 'vedic.jpg',
+        'icon' => 'fa-infinity'
+    ],
+    [
+        'name' => 'Vocal',
+        'level' => 'All Levels',
+        'description' => 'Develop your singing voice and performance skills with our professional vocal coaching.',
+        'image' => 'vocal.jpg',
+        'icon' => 'fa-microphone'
+    ]
+];
 ?>
 
 <!-- Statistics Section -->
-<section class=" bg-white">
+<section class="bg-white">
     <div class="container mx-auto px-4">
-         <!-- Logout Success Message -->
+        <!-- Logout Success Message -->
         <?php if (isset($_GET['logged_out'])): ?>
             <div class="max-w-2xl mx-auto mb-8">
                 <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-md">
@@ -49,31 +137,6 @@ $totalBookings = $db->count('bookings', ['booking_status' => 'confirmed']);
                 </div>
             </div>
         <?php endif; ?>
-        <!-- <div class="grid md:grid-cols-3 gap-8">
-            <div class="stats-card text-center hover-lift">
-                <div class="stats-icon bg-indigo-100 text-indigo-600 mx-auto">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-gray-800 mb-2"><?php echo number_format($totalEvents); ?>+</h3>
-                <p class="text-gray-600 font-medium">Active Tournaments</p>
-            </div>
-
-            <div class="stats-card text-center hover-lift">
-                <div class="stats-icon bg-purple-100 text-purple-600 mx-auto">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-gray-800 mb-2"><?php echo number_format($totalUsers); ?>+</h3>
-                <p class="text-gray-600 font-medium">Active Players</p>
-            </div>
-
-            <div class="stats-card text-center hover-lift">
-                <div class="stats-icon bg-pink-100 text-pink-600 mx-auto">
-                    <i class="fas fa-ticket-alt"></i>
-                </div>
-                <h3 class="text-4xl font-bold text-gray-800 mb-2"><?php echo number_format($totalBookings); ?>+</h3>
-                <p class="text-gray-600 font-medium">Bookings Made</p>
-            </div>
-        </div> -->
     </div>
 </section>
 
@@ -95,7 +158,6 @@ $totalBookings = $db->count('bookings', ['booking_status' => 'confirmed']);
                 <?php foreach ($featuredEvents as $event): ?>
                     <div class="card p-6 hover-lift event-card">
                         <?php 
-                        // Use SVG placeholders
                         $svgImages = ['tournament-1.svg', 'tournament-2.svg', 'tournament-3.svg'];
                         $randomSvg = $svgImages[array_rand($svgImages)];
                         
@@ -142,7 +204,6 @@ $totalBookings = $db->count('bookings', ['booking_status' => 'confirmed']);
                             </span>
                         </div>
 
-                        <!-- ✅ FIXED: Use clean URL -->
                         <a href="<?php echo BASE_URL; ?>/event-details?id=<?php echo $event['event_id']; ?>"
                             class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold transition">
                             View Details <i class="fas fa-arrow-right ml-2"></i>
@@ -152,7 +213,6 @@ $totalBookings = $db->count('bookings', ['booking_status' => 'confirmed']);
             </div>
 
             <div class="text-center mt-12">
-                <!-- ✅ FIXED: Use clean URL -->
                 <a href="<?php echo BASE_URL; ?>/browse-events"
                     class="btn-outline inline-block">
                     View All Events <i class="fas fa-arrow-right ml-2"></i>
@@ -162,8 +222,67 @@ $totalBookings = $db->count('bookings', ['booking_status' => 'confirmed']);
     </div>
 </section>
 
-<!-- How It Works Section -->
+<!-- Elevate Your Skills Section -->
 <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Elevate Your Skills</h2>
+            <p class="text-xl text-gray-600">Our expert-led classes cater to all ages and levels, from absolute beginners to aspiring masters.</p>
+        </div>
+
+        <!-- Free Demo Banner -->
+        <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-400 rounded-lg p-6 mb-12 shadow-sm">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <svg class="h-8 w-8 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </div>
+                <div class="ml-4 flex-1">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Free Demo Classes Available!</h3>
+                    <p class="text-gray-700 mb-4">Not sure which class is right for you or your child? We offer free demo sessions for all our subjects. It's a great way to meet our instructors and experience our teaching style firsthand.</p>
+                    <a href="<?php echo BASE_URL; ?>/book-demo" 
+                        class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-md">
+                        Book a Free Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Classes Grid -->
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <?php foreach ($classes as $class): ?>
+                <div class="card p-5 hover-lift">
+                    <div class="flex items-center justify-center w-full h-40 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg mb-4">
+                        <i class="fas <?php echo $class['icon']; ?> text-6xl text-indigo-600"></i>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <span class="inline-block bg-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full">
+                            <?php echo htmlspecialchars($class['level']); ?>
+                        </span>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">
+                        <?php echo htmlspecialchars($class['name']); ?>
+                    </h3>
+                    
+                    <p class="text-gray-600 text-sm mb-4 line-clamp-3">
+                        <?php echo htmlspecialchars($class['description']); ?>
+                    </p>
+                    
+                    <a href="<?php echo BASE_URL; ?>/enroll?class=<?php echo urlencode(strtolower($class['name'])); ?>"
+                        class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-semibold transition text-sm">
+                        Enroll Now
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
         <div class="text-center mb-12">
             <h2 class="text-4xl font-bold text-gray-800 mb-4">How It Works</h2>
@@ -204,12 +323,10 @@ $totalBookings = $db->count('bookings', ['booking_status' => 'confirmed']);
         <h2 class="text-4xl font-bold mb-6">Ready to Start Your Chess Journey?</h2>
         <p class="text-xl mb-8 text-gray-100">Join thousands of players competing worldwide</p>
         <div class="flex flex-wrap justify-center gap-4">
-            <!-- ✅ FIXED: Use clean URL -->
             <a href="<?php echo BASE_URL; ?>/register"
                 class="bg-white text-indigo-600 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition shadow-xl">
                 Get Started Free
             </a>
-            <!-- ✅ FIXED: Use clean URL -->
             <a href="<?php echo BASE_URL; ?>/browse-events"
                 class="bg-transparent border-2 border-white text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-white hover:text-indigo-600 transition">
                 Browse Tournaments
