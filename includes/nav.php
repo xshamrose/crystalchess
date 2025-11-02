@@ -19,6 +19,42 @@ $userType = $_SESSION['user_type'] ?? 'guest';
 $userName = $_SESSION['user_name'] ?? 'User';
 ?>
 
+<style>
+    /* Dropdown hover fix - removes gap between button and menu */
+    .dropdown-wrapper {
+        position: relative;
+    }
+    
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        margin-top: 0;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.2s ease-in-out;
+        pointer-events: none;
+    }
+    
+    .dropdown-wrapper:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+    
+    /* Add padding to the wrapper to extend hover area */
+    .dropdown-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        height: 0px;
+    }
+</style>
+
 <nav class="bg-white shadow-lg sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -34,7 +70,6 @@ $userName = $_SESSION['user_name'] ?? 'User';
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center space-x-4">
-                <!-- ✅ FIXED: Changed from /events to /browse-events -->
                 <a href="<?php echo BASE_URL; ?>/browse-events" 
                    class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
                     Browse Events
@@ -63,7 +98,7 @@ $userName = $_SESSION['user_name'] ?? 'User';
                     <?php endif; ?>
 
                     <?php if ($userType === 'admin'): ?>
-                        <div class="relative group">
+                        <div class="dropdown-wrapper">
                             <button class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition flex items-center">
                                 Admin
                                 <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,34 +107,34 @@ $userName = $_SESSION['user_name'] ?? 'User';
                             </button>
                             <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-focus-within:block">
                                 <a href="<?php echo BASE_URL; ?>/admin-dashboard" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     📊 Dashboard
                                 </a>
                                 <a href="<?php echo BASE_URL; ?>/admin-users" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     👥 Users
                                 </a>
                                 <a href="<?php echo BASE_URL; ?>/admin-events" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     🏆 Events
                                 </a>
                                 <a href="<?php echo BASE_URL; ?>/admin-bookings" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     📋 Bookings
                                 </a>
                                 <a href="<?php echo BASE_URL; ?>/admin-payment-reports" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     💰 Payment Reports
                                 </a>
                                 <a href="<?php echo BASE_URL; ?>/admin-settings" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     ⚙️ Settings
                                 </a>
                             </div>
                         </div>
                     <?php endif; ?>
 
-                    <div class="relative group">
+                    <div class="dropdown-wrapper">
                         <button class="flex items-center space-x-2 text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
                             <span><?php echo htmlspecialchars($userName); ?></span>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -108,16 +143,16 @@ $userName = $_SESSION['user_name'] ?? 'User';
                         </button>
                         <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-focus-within:block">
                             <a href="<?php echo BASE_URL; ?>/profile" 
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                 👤 Profile
                             </a>
                             <a href="<?php echo BASE_URL; ?>/booking-history" 
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
+                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                 📖 Booking History
                             </a>
                             <hr class="my-1">
                             <a href="<?php echo BASE_URL; ?>/logout" 
-                               class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                               class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                                 🚪 Logout
                             </a>
                         </div>
@@ -139,7 +174,6 @@ $userName = $_SESSION['user_name'] ?? 'User';
     <!-- Mobile menu -->
     <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200">
         <div class="px-2 pt-2 pb-3 space-y-1">
-            <!-- ✅ FIXED: Changed from /events to /browse-events -->
             <a href="<?php echo BASE_URL; ?>/browse-events" 
                class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                 Browse Events

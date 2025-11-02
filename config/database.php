@@ -7,9 +7,9 @@
 
 // Development Environment
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'crystalchess');
+define('DB_NAME', 'crystal_chess');
 define('DB_USER', 'root');
-define('DB_PASS', 'Shanel@323');
+define('DB_PASS', '');
 
 // Production Environment (Update these for GoDaddy)
 // define('DB_HOST', 'your_godaddy_host');
