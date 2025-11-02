@@ -1,7 +1,7 @@
 <?php
-require_once '../../config/database.php';
-require_once '../../core/Auth.php';
-require_once '../../core/Mailer.php';
+require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../core/Auth.php';
+require_once __DIR__ . '/../../core/Mailer.php';
 
 $auth = new Auth($pdo);
 $auth->requireLogin();
@@ -158,8 +158,8 @@ $stmt = $pdo->prepare($recent_notifications_sql);
 $stmt->execute([$organizer_id]);
 $recent_notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-include '../../includes/header.php';
-include '../../includes/nav.php';
+include __DIR__ . '/../../includes/header.php';
+#include '../../includes/nav.php';
 ?>
 
 <div class="min-h-screen bg-gray-50 py-8">
@@ -488,4 +488,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include __DIR__ . '/../../includes/footer.php'; ?>

@@ -78,7 +78,7 @@ include __DIR__ . '/../../includes/header.php';
                 
                 <div class="bg-white rounded-lg shadow p-6">
                     <label class="block text-sm font-medium text-gray-700 mb-2">Select Event</label>
-                    <select onchange="if(this.value) window.location.href='participants.php?event_id='+this.value"
+                    <select onchange="if(this.value) window.location.href='<?php echo (BASE_URL); ?>/participants?event_id='+this.value"
                             class="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                         <option value="">Choose an event...</option>
                         <?php foreach ($all_events as $ev): ?>
@@ -101,11 +101,11 @@ include __DIR__ . '/../../includes/header.php';
                         </p>
                     </div>
                     <div class="flex space-x-3">
-                        <a href="/chess/crystalchess/modules/organizer/participants.php?event_id=<?= $event['event_id'] ?>" 
+                        <a href="<?= BASE_URL ?>/modules/organizer/participants.php?event_id=<?= $event['event_id'] ?>" 
                            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                            View Participants
                         </a>
-                        <a href="manage-events.php" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        <a href="<?= BASE_URL ?>/modules/organizer/manage-events.php"  class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                             Back to Events
                         </a>
                         <button onclick="exportParticipants()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
@@ -172,7 +172,7 @@ include __DIR__ . '/../../includes/header.php';
                         </div>
                         <div class="ml-4">
                             <p class="text-sm font-medium text-gray-500">Revenue</p>
-                            <p class="text-2xl font-semibold text-gray-900">$<?= number_format($stats['total_revenue'], 2) ?></p>
+                            <p class="text-2xl font-semibold text-gray-900">$<?= number_format($stats['total_revenue']?? 0, 2) ?></p>
                         </div>
                     </div>
                 </div>
@@ -288,4 +288,4 @@ function exportParticipants() {
 }
 </script>
 
-<?php include '../../includes/footer.php'; ?>
+<?php include  __DIR__ . '/../../includes/footer.php'; ?>

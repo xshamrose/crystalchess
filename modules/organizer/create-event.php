@@ -258,10 +258,10 @@ include INCLUDES_PATH . '/header.php';
                     <!-- Entry Fee -->
                     <div>
                         <label for="entry_fee" class="block text-sm font-medium text-gray-700 mb-2">
-                            Entry Fee ($) <span class="text-red-500">*</span>
+                            Entry Fee (₹) <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
-                            <span class="absolute left-4 top-3.5 text-gray-500">$</span>
+                            <span class="absolute left-4 top-3.5 text-gray-500">₹</span>
                             <input type="number" name="entry_fee" id="entry_fee" required min="0" step="0.01"
                                    value="<?= htmlspecialchars($_POST['entry_fee'] ?? '') ?>"
                                    class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
