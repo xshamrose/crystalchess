@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../../config/database.php';
-require_once __DIR__ . '/../../core/Auth.php';
+require_once  __DIR__ . '/../../config/database.php';
+require_once  __DIR__ . '/../../core/Auth.php';
 
 Auth::requireLogin();
 $user = Auth::getUser();
@@ -78,7 +78,7 @@ try {
     $bookings = [];
 }
 
-include __DIR__ . '/../../includes/header.php';
+include  __DIR__ . '/../../includes/header.php';
 ?>
 
 <div class="min-h-screen bg-gray-50 py-8">
@@ -91,7 +91,7 @@ include __DIR__ . '/../../includes/header.php';
                     <h1 class="text-3xl font-bold text-gray-900">Booking History</h1>
                     <p class="text-gray-600 mt-2">View and manage all your tournament bookings</p>
                 </div>
-                <a href="dashboard" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                <a href="<?php echo BASE_URL; ?>/organizer-dashboard" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                     <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
@@ -171,7 +171,7 @@ include __DIR__ . '/../../includes/header.php';
                         <?php endif; ?>
                     </p>
                     <div class="mt-6">
-                        <a href="../events/browse.php" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <a href="<?php echo rtrim(BASE_URL, '/'); ?>/browse-events" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                             Browse Events
                         </a>
                     </div>
@@ -440,4 +440,4 @@ document.getElementById('cancelModal').addEventListener('click', function(e) {
 });
 </script>
 
-<?php include __DIR__ . '/../../includes/footer.php'; ?>
+<?php include  __DIR__ . '/../../includes/footer.php'; ?>
