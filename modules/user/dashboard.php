@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User Dashboard
  * Crystal Chess Tournament Booking Platform
@@ -31,7 +32,7 @@ try {
     $stmt = $pdo->prepare("SELECT COUNT(*) as count FROM bookings WHERE user_id = ?");
     $stmt->execute([Auth::getUserId()]);
     $stats['total_bookings'] = $stmt->fetch()['count'];
-    
+
     // Upcoming events
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as count 
@@ -43,7 +44,7 @@ try {
     ");
     $stmt->execute([Auth::getUserId()]);
     $stats['upcoming_events'] = $stmt->fetch()['count'];
-    
+
     // Completed events
     $stmt = $pdo->prepare("
         SELECT COUNT(*) as count 
@@ -55,7 +56,7 @@ try {
     ");
     $stmt->execute([Auth::getUserId()]);
     $stats['completed_events'] = $stmt->fetch()['count'];
-    
+
     // Total spent
     $stmt = $pdo->prepare("
         SELECT COALESCE(SUM(amount_paid), 0) as total 
@@ -64,7 +65,7 @@ try {
     ");
     $stmt->execute([Auth::getUserId()]);
     $stats['total_spent'] = $stmt->fetch()['total'];
-    
+
     // Fetch upcoming bookings (limit 5)
     $stmt = $pdo->prepare("
         SELECT 
@@ -88,7 +89,7 @@ try {
     ");
     $stmt->execute([Auth::getUserId()]);
     $upcoming_bookings = $stmt->fetchAll();
-    
+
     // Fetch recent bookings (limit 5)
     $stmt = $pdo->prepare("
         SELECT 
@@ -110,7 +111,7 @@ try {
     ");
     $stmt->execute([Auth::getUserId()]);
     $recent_bookings = $stmt->fetchAll();
-    
+
     // Fetch user details for profile section
     $stmt = $pdo->prepare("
         SELECT full_name, email, phone, profile_picture, created_at 
@@ -119,8 +120,7 @@ try {
     ");
     $stmt->execute([Auth::getUserId()]);
     $user = $stmt->fetch();
-    
-} catch(PDOException $e) {
+} catch (PDOException $e) {
     $error = "Error loading dashboard data";
     error_log("Dashboard error: " . $e->getMessage());
 }
@@ -141,7 +141,7 @@ include __DIR__ . '/../../includes/header.php';
 
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         <!-- Page Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900">Welcome back, <?php echo htmlspecialchars($user['full_name']); ?>! 👋</h1>
@@ -159,7 +159,7 @@ include __DIR__ . '/../../includes/header.php';
                     </div>
                     <div class="bg-blue-100 rounded-full p-3">
                         <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
                     </div>
                 </div>
@@ -174,7 +174,7 @@ include __DIR__ . '/../../includes/header.php';
                     </div>
                     <div class="bg-green-100 rounded-full p-3">
                         <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                     </div>
                 </div>
@@ -189,7 +189,7 @@ include __DIR__ . '/../../includes/header.php';
                     </div>
                     <div class="bg-purple-100 rounded-full p-3">
                         <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                 </div>
@@ -204,7 +204,7 @@ include __DIR__ . '/../../includes/header.php';
                     </div>
                     <div class="bg-indigo-100 rounded-full p-3">
                         <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </div>
                 </div>
@@ -214,7 +214,7 @@ include __DIR__ . '/../../includes/header.php';
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <!-- Main Content (Left 2/3) -->
             <div class="lg:col-span-2 space-y-8">
-                
+
                 <!-- Upcoming Bookings -->
                 <div class="bg-white rounded-lg shadow">
                     <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
@@ -225,7 +225,7 @@ include __DIR__ . '/../../includes/header.php';
                         <?php if (empty($upcoming_bookings)): ?>
                             <div class="text-center py-12">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                 </svg>
                                 <h3 class="mt-2 text-sm font-medium text-gray-900">No upcoming events</h3>
                                 <p class="mt-1 text-sm text-gray-500">Get started by booking your first tournament!</p>
@@ -245,20 +245,20 @@ include __DIR__ . '/../../includes/header.php';
                                                 <div class="mt-2 space-y-1 text-sm text-gray-600">
                                                     <p class="flex items-center">
                                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                         </svg>
                                                         <?php echo date('D, M j, Y', strtotime($booking['event_date'])); ?> at <?php echo date('g:i A', strtotime($booking['event_time'])); ?>
                                                     </p>
                                                     <p class="flex items-center">
                                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                         </svg>
                                                         <?php echo htmlspecialchars($booking['location']); ?>
                                                     </p>
                                                     <p class="flex items-center">
                                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                         </svg>
                                                         Participant: <?php echo htmlspecialchars($booking['participant_name']); ?>
                                                     </p>
@@ -269,8 +269,8 @@ include __DIR__ . '/../../includes/header.php';
                                                     <?php echo $booking['payment_status'] === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
                                                     <?php echo ucfirst($booking['payment_status']); ?>
                                                 </span>
-                                                <a href="<?php echo BASE_URL; ?>/event-details?id=<?php echo $booking['event_id']; ?>" 
-                                                   class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                                <a href="<?php echo BASE_URL; ?>/event-details?id=<?php echo $booking['event_id']; ?>"
+                                                    class="text-sm text-blue-600 hover:text-blue-700 font-medium">
                                                     View Details →
                                                 </a>
                                             </div>
@@ -317,7 +317,7 @@ include __DIR__ . '/../../includes/header.php';
                                             </td>
                                             <td class="px-6 py-4">
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                                    <?php 
+                                                    <?php
                                                     if ($booking['payment_status'] === 'paid') echo 'bg-green-100 text-green-800';
                                                     elseif ($booking['payment_status'] === 'pending') echo 'bg-yellow-100 text-yellow-800';
                                                     else echo 'bg-red-100 text-red-800';
@@ -337,7 +337,7 @@ include __DIR__ . '/../../includes/header.php';
 
             <!-- Sidebar (Right 1/3) -->
             <div class="space-y-6">
-                
+
                 <!-- Quick Actions -->
                 <div class="bg-white rounded-lg shadow p-6">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
@@ -345,19 +345,19 @@ include __DIR__ . '/../../includes/header.php';
                         <a href="<?php echo BASE_URL; ?>/events" class="flex items-center justify-between p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition">
                             <span class="text-sm font-medium text-blue-900">Browse Events</span>
                             <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
                         <a href="<?php echo BASE_URL; ?>/booking-history" class="flex items-center justify-between p-3 bg-green-50 rounded-lg hover:bg-green-100 transition">
                             <span class="text-sm font-medium text-green-900">My Bookings</span>
                             <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
                         <a href="<?php echo BASE_URL; ?>/profile" class="flex items-center justify-between p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition">
                             <span class="text-sm font-medium text-purple-900">Edit Profile</span>
                             <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
                     </div>
@@ -369,8 +369,8 @@ include __DIR__ . '/../../includes/header.php';
                     <div class="flex items-center space-x-4">
                         <div class="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
                             <?php if (!empty($user['profile_picture'])): ?>
-                                <img src="<?php echo UPLOADS_URL; ?>/profiles/<?php echo htmlspecialchars($user['profile_picture']); ?>" 
-                                     alt="Profile" class="h-16 w-16 rounded-full object-cover">
+                                <img src="<?php echo UPLOADS_URL; ?>/profiles/<?php echo htmlspecialchars($user['profile_picture']); ?>"
+                                    alt="Profile" class="h-16 w-16 rounded-full object-cover">
                             <?php else: ?>
                                 <span class="text-2xl font-bold text-blue-600">
                                     <?php echo strtoupper(substr($user['full_name'], 0, 1)); ?>
@@ -386,7 +386,7 @@ include __DIR__ . '/../../includes/header.php';
                 </div>
 
                 <!-- Support Card -->
-                <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow p-6 text-white">
+                <!-- <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow p-6 text-white">
                     <h3 class="text-lg font-semibold mb-2">Need Help?</h3>
                     <p class="text-sm text-blue-100 mb-4">Our support team is here to assist you with any questions.</p>
                     <a href="#" class="inline-flex items-center text-sm font-medium text-white hover:text-blue-100">
@@ -395,7 +395,7 @@ include __DIR__ . '/../../includes/header.php';
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                         </svg>
                     </a>
-                </div>
+                </div> -->
 
             </div>
         </div>
