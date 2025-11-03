@@ -68,6 +68,46 @@ if (!isset($_SESSION)) {
 </head>
 
 <body class="bg-gray-50 min-h-screen">
+    <?php if (isset($_GET['logged_out'])): ?>
+        <div id="logout-toast"
+            class="fixed top-5 right-5 z-[9999] bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center space-x-3 animate-fade-in">
+            <i class="fas fa-check-circle text-white text-lg"></i>
+            <span>You have been successfully logged out. See you again soon!</span>
+        </div>
+
+        <script>
+            // Auto-hide after 3 seconds
+            setTimeout(() => {
+                const toast = document.getElementById('logout-toast');
+                if (toast) toast.remove();
+            }, 3000);
+
+            // Remove the ?logged_out=1 from URL after showing once
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.delete('logged_out');
+                window.history.replaceState({}, document.title, url.pathname + url.search);
+            }
+        </script>
+
+        <style>
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .animate-fade-in {
+                animation: fadeIn 0.3s ease-out;
+            }
+        </style>
+    <?php endif; ?>
 
     <!-- Flash Messages -->
     <?php

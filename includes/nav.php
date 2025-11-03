@@ -73,7 +73,7 @@ $userName = $_SESSION['user_name'] ?? 'User';
             <div class="hidden md:flex items-center space-x-4">
                 <a href="<?php echo BASE_URL; ?>/browse-events"
                     class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
-                    Browse Events
+                    Browse Tournaments
                 </a>
 
                 <?php if ($userType === 'guest'): ?>
@@ -122,6 +122,10 @@ $userName = $_SESSION['user_name'] ?? 'User';
                                 <a href="<?php echo BASE_URL; ?>/admin-bookings"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     📋 Bookings
+                                </a>
+                                <a href="<?php echo BASE_URL; ?>/admin-enrollments"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                                    🎓 Enrollments
                                 </a>
                                 <a href="<?php echo BASE_URL; ?>/admin-payment-reports"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
@@ -228,6 +232,10 @@ $userName = $_SESSION['user_name'] ?? 'User';
                         <a href="<?php echo BASE_URL; ?>/admin-bookings"
                             class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                             📋 Bookings
+                        </a>
+                        <a href="<?php echo BASE_URL; ?>/admin-enrollments"
+                            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                            🎓 Enrollments
                         </a>
                         <a href="<?php echo BASE_URL; ?>/admin-payment-reports"
                             class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
