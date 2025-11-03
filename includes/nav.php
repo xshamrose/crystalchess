@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Navigation Component
  * File: includes/nav.php
@@ -24,7 +25,7 @@ $userName = $_SESSION['user_name'] ?? 'User';
     .dropdown-wrapper {
         position: relative;
     }
-    
+
     .dropdown-menu {
         position: absolute;
         top: 100%;
@@ -36,14 +37,14 @@ $userName = $_SESSION['user_name'] ?? 'User';
         transition: all 0.2s ease-in-out;
         pointer-events: none;
     }
-    
+
     .dropdown-wrapper:hover .dropdown-menu {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
         pointer-events: auto;
     }
-    
+
     /* Add padding to the wrapper to extend hover area */
     .dropdown-wrapper::after {
         content: '';
@@ -70,29 +71,29 @@ $userName = $_SESSION['user_name'] ?? 'User';
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center space-x-4">
-                <a href="<?php echo BASE_URL; ?>/browse-events" 
-                   class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
+                <a href="<?php echo BASE_URL; ?>/browse-events"
+                    class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
                     Browse Events
                 </a>
 
                 <?php if ($userType === 'guest'): ?>
-                    <a href="<?php echo BASE_URL; ?>/login" 
-                       class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
+                    <a href="<?php echo BASE_URL; ?>/login"
+                        class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
                         Login
                     </a>
-                    <a href="<?php echo BASE_URL; ?>/register" 
-                       class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition">
+                    <a href="<?php echo BASE_URL; ?>/register"
+                        class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-lg font-medium hover:shadow-lg transition">
                         Sign Up
                     </a>
                 <?php else: ?>
-                    <a href="<?php echo BASE_URL; ?>/dashboard" 
-                       class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
+                    <a href="<?php echo BASE_URL; ?>/dashboard"
+                        class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
                         Dashboard
                     </a>
 
                     <?php if ($userType === 'organizer'): ?>
-                        <a href="<?php echo BASE_URL; ?>/organizer-dashboard" 
-                           class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
+                        <a href="<?php echo BASE_URL; ?>/organizer-dashboard"
+                            class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md font-medium transition">
                             Organizer Panel
                         </a>
                     <?php endif; ?>
@@ -105,29 +106,29 @@ $userName = $_SESSION['user_name'] ?? 'User';
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                                 </svg>
                             </button>
-                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-focus-within:block">
-                                <a href="<?php echo BASE_URL; ?>/admin-dashboard" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                            <div class="dropdown-menu w-48 bg-white rounded-md shadow-lg py-1 border border-gray-100">
+                                <a href="<?php echo BASE_URL; ?>/admin-dashboard"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     📊 Dashboard
                                 </a>
-                                <a href="<?php echo BASE_URL; ?>/admin-users" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                                <a href="<?php echo BASE_URL; ?>/admin-users"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     👥 Users
                                 </a>
-                                <a href="<?php echo BASE_URL; ?>/admin-events" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                                <a href="<?php echo BASE_URL; ?>/admin-events"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     🏆 Events
                                 </a>
-                                <a href="<?php echo BASE_URL; ?>/admin-bookings" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                                <a href="<?php echo BASE_URL; ?>/admin-bookings"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     📋 Bookings
                                 </a>
-                                <a href="<?php echo BASE_URL; ?>/admin-payment-reports" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                                <a href="<?php echo BASE_URL; ?>/admin-payment-reports"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     💰 Payment Reports
                                 </a>
-                                <a href="<?php echo BASE_URL; ?>/admin-settings" 
-                                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                                <a href="<?php echo BASE_URL; ?>/admin-settings"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     ⚙️ Settings
                                 </a>
                             </div>
@@ -141,18 +142,18 @@ $userName = $_SESSION['user_name'] ?? 'User';
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-focus-within:block">
-                            <a href="<?php echo BASE_URL; ?>/profile" 
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                        <div class="dropdown-menu w-48 bg-white rounded-md shadow-lg py-1 border border-gray-100">
+                            <a href="<?php echo BASE_URL; ?>/profile"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                 👤 Profile
                             </a>
-                            <a href="<?php echo BASE_URL; ?>/booking-history" 
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                            <a href="<?php echo BASE_URL; ?>/booking-history"
+                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                 📖 Booking History
                             </a>
                             <hr class="my-1">
-                            <a href="<?php echo BASE_URL; ?>/logout" 
-                               class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                            <a href="<?php echo BASE_URL; ?>/logout"
+                                class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
                                 🚪 Logout
                             </a>
                         </div>
@@ -174,37 +175,37 @@ $userName = $_SESSION['user_name'] ?? 'User';
     <!-- Mobile menu -->
     <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200">
         <div class="px-2 pt-2 pb-3 space-y-1">
-            <a href="<?php echo BASE_URL; ?>/browse-events" 
-               class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+            <a href="<?php echo BASE_URL; ?>/browse-events"
+                class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                 Browse Events
             </a>
 
             <?php if ($userType === 'guest'): ?>
-                <a href="<?php echo BASE_URL; ?>/login" 
-                   class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                <a href="<?php echo BASE_URL; ?>/login"
+                    class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                     Login
                 </a>
-                <a href="<?php echo BASE_URL; ?>/register" 
-                   class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                <a href="<?php echo BASE_URL; ?>/register"
+                    class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                     Sign Up
                 </a>
             <?php else: ?>
-                <a href="<?php echo BASE_URL; ?>/dashboard" 
-                   class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                <a href="<?php echo BASE_URL; ?>/dashboard"
+                    class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                     Dashboard
                 </a>
-                <a href="<?php echo BASE_URL; ?>/profile" 
-                   class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                <a href="<?php echo BASE_URL; ?>/profile"
+                    class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                     Profile
                 </a>
-                <a href="<?php echo BASE_URL; ?>/booking-history" 
-                   class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                <a href="<?php echo BASE_URL; ?>/booking-history"
+                    class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                     Booking History
                 </a>
 
                 <?php if ($userType === 'organizer'): ?>
-                    <a href="<?php echo BASE_URL; ?>/organizer-dashboard" 
-                       class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                    <a href="<?php echo BASE_URL; ?>/organizer-dashboard"
+                        class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                         Organizer Panel
                     </a>
                 <?php endif; ?>
@@ -212,36 +213,36 @@ $userName = $_SESSION['user_name'] ?? 'User';
                 <?php if ($userType === 'admin'): ?>
                     <div class="border-t border-gray-200 mt-2 pt-2">
                         <p class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">Admin</p>
-                        <a href="<?php echo BASE_URL; ?>/admin-dashboard" 
-                           class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                        <a href="<?php echo BASE_URL; ?>/admin-dashboard"
+                            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                             📊 Dashboard
                         </a>
-                        <a href="<?php echo BASE_URL; ?>/admin-users" 
-                           class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                        <a href="<?php echo BASE_URL; ?>/admin-users"
+                            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                             👥 Users
                         </a>
-                        <a href="<?php echo BASE_URL; ?>/admin-events" 
-                           class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                        <a href="<?php echo BASE_URL; ?>/admin-events"
+                            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                             🏆 Events
                         </a>
-                        <a href="<?php echo BASE_URL; ?>/admin-bookings" 
-                           class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                        <a href="<?php echo BASE_URL; ?>/admin-bookings"
+                            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                             📋 Bookings
                         </a>
-                        <a href="<?php echo BASE_URL; ?>/admin-payment-reports" 
-                           class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                        <a href="<?php echo BASE_URL; ?>/admin-payment-reports"
+                            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                             💰 Payment Reports
                         </a>
-                        <a href="<?php echo BASE_URL; ?>/admin-settings" 
-                           class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                        <a href="<?php echo BASE_URL; ?>/admin-settings"
+                            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                             ⚙️ Settings
                         </a>
                     </div>
                 <?php endif; ?>
 
                 <div class="border-t border-gray-200 mt-2 pt-2">
-                    <a href="<?php echo BASE_URL; ?>/logout" 
-                       class="block px-3 py-2 rounded-md text-red-600 hover:bg-red-50">
+                    <a href="<?php echo BASE_URL; ?>/logout"
+                        class="block px-3 py-2 rounded-md text-red-600 hover:bg-red-50">
                         🚪 Logout
                     </a>
                 </div>
@@ -251,8 +252,8 @@ $userName = $_SESSION['user_name'] ?? 'User';
 </nav>
 
 <script>
-function toggleMobileMenu() {
-    const menu = document.getElementById('mobileMenu');
-    menu.classList.toggle('hidden');
-}
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobileMenu');
+        menu.classList.toggle('hidden');
+    }
 </script>
