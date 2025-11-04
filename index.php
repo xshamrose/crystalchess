@@ -24,6 +24,23 @@ if ($uri === '' || $uri === 'index.php') {
     $uri = 'home';
 }
 
+// Handle API routes separately (before checking static routes)
+if (strpos($uri, 'api/') === 0) {
+    $apiFile = __DIR__ . '/' . $uri;
+    if (file_exists($apiFile)) {
+        require_once $apiFile;
+        exit;
+    } else {
+        http_response_code(404);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'API endpoint not found: ' . htmlspecialchars($uri)
+        ]);
+        exit;
+    }
+}
+
 // Define all routes
 $routes = [
     // Home
@@ -68,6 +85,7 @@ $routes = [
     'admin-events' => 'modules/admin/events.php',
     'admin-edit-event' => 'modules/admin/edit-event.php',
     'admin-bookings' => 'modules/admin/bookings.php',
+    'admin-enrollments' => 'modules/admin/enrollments.php',
     'admin-payments' => 'modules/admin/payments.php',
     'admin-payment-reports' => 'modules/admin/payment-reports.php',
     'admin-reports' => 'modules/admin/reports.php',
