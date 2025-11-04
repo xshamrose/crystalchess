@@ -446,3 +446,4 @@ $stats = [
 </script>
 
 <?php include INCLUDES_PATH . '/footer.php'; ?>
+

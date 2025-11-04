@@ -133,7 +133,7 @@ include '../../includes/header.php';
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Revenue</p>
-                        <p class="text-3xl font-bold text-green-600 mt-2">$<?php echo number_format($summary['total_revenue'], 2); ?></p>
+                        <p class="text-3xl font-bold text-green-600 mt-2">₹<?php echo number_format($summary['total_revenue'], 2); ?></p>
                         <p class="text-sm text-gray-500 mt-1"><?php echo number_format($summary['total_paid_bookings']); ?> paid bookings</p>
                     </div>
                     <div class="bg-green-100 rounded-full p-3">
@@ -148,7 +148,7 @@ include '../../includes/header.php';
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Avg Booking Value</p>
-                        <p class="text-3xl font-bold text-blue-600 mt-2">$<?php echo number_format($summary['avg_booking_value'], 2); ?></p>
+                        <p class="text-3xl font-bold text-blue-600 mt-2">₹<?php echo number_format($summary['avg_booking_value'], 2); ?></p>
                         <p class="text-sm text-gray-500 mt-1">Per transaction</p>
                     </div>
                     <div class="bg-blue-100 rounded-full p-3">
@@ -163,7 +163,7 @@ include '../../includes/header.php';
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Total Refunds</p>
-                        <p class="text-3xl font-bold text-red-600 mt-2">$<?php echo number_format($summary['refund_amount'], 2); ?></p>
+                        <p class="text-3xl font-bold text-red-600 mt-2">₹<?php echo number_format($summary['refund_amount'], 2); ?></p>
                         <p class="text-sm text-gray-500 mt-1"><?php echo number_format($summary['total_refunds']); ?> refunds</p>
                     </div>
                     <div class="bg-red-100 rounded-full p-3">
@@ -178,7 +178,7 @@ include '../../includes/header.php';
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm font-medium text-gray-600">Net Revenue</p>
-                        <p class="text-3xl font-bold text-purple-600 mt-2">$<?php echo number_format($summary['total_revenue'] - $summary['refund_amount'], 2); ?></p>
+                        <p class="text-3xl font-bold text-purple-600 mt-2">₹<?php echo number_format($summary['total_revenue'] - $summary['refund_amount'], 2); ?></p>
                         <p class="text-sm text-gray-500 mt-1">After refunds</p>
                     </div>
                     <div class="bg-purple-100 rounded-full p-3">

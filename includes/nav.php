@@ -151,10 +151,12 @@ $userName = $_SESSION['user_name'] ?? 'User';
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                 👤 Profile
                             </a>
-                            <a href="<?php echo BASE_URL; ?>/booking-history"
-                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
-                                📖 Booking History
-                            </a>
+                            <?php if ($_SESSION['user_type'] !== 'admin'): ?>
+                                <a href="<?php echo BASE_URL; ?>/booking-history"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                                    📖 Booking History
+                                </a>
+                            <?php endif; ?>
                             <hr class="my-1">
                             <a href="<?php echo BASE_URL; ?>/logout"
                                 class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
