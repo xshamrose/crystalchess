@@ -3,7 +3,6 @@
 /**
  * Homepage
  * Crystal Chess Tournament Booking Platform
- * /public/index.php
  */
 
 require_once __DIR__ . '/../config/config.php';
@@ -189,7 +188,6 @@ $classes = [
         overflow: hidden;
         width: 100%;
         max-width: 320px;
-        /* smaller width */
         padding: 1rem;
         display: flex;
         flex-direction: column;
@@ -228,9 +226,8 @@ $classes = [
         padding: 0.5rem 0.75rem;
     }
 
-
-    /* Demo Form Modal Styles */
-    .modal-overlay {
+    /* Enrollment Modal Styles */
+    .enrollment-modal-overlay {
         display: none;
         position: fixed;
         top: 0;
@@ -238,22 +235,22 @@ $classes = [
         right: 0;
         bottom: 0;
         background-color: rgba(0, 0, 0, 0.7);
-        z-index: 9998;
+        z-index: 9999;
         animation: fadeIn 0.3s ease;
     }
 
-    .modal-overlay.active {
+    .enrollment-modal-overlay.active {
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 1rem;
     }
 
-    .demo-modal {
+    .enrollment-modal {
         background: white;
         border-radius: 1rem;
         width: 100%;
-        max-width: 600px;
+        max-width: 700px;
         max-height: 90vh;
         overflow-y: auto;
         position: relative;
@@ -261,22 +258,24 @@ $classes = [
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
 
-    .modal-header {
+    .enrollment-modal-header {
         padding: 2rem;
-        border-bottom: 1px solid #e5e7eb;
-        position: relative;
+        border-bottom: 2px solid #e5e7eb;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 1rem 1rem 0 0;
     }
 
-    .modal-close {
+    .enrollment-modal-close {
         position: absolute;
         top: 1rem;
         right: 1rem;
-        background: none;
+        background: rgba(255, 255, 255, 0.2);
         border: none;
         font-size: 1.5rem;
         cursor: pointer;
-        color: #6b7280;
-        transition: color 0.2s;
+        color: white;
+        transition: all 0.2s;
         width: 2.5rem;
         height: 2.5rem;
         display: flex;
@@ -285,20 +284,20 @@ $classes = [
         border-radius: 0.5rem;
     }
 
-    .modal-close:hover {
-        color: #111827;
-        background-color: #f3f4f6;
+    .enrollment-modal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
     }
 
-    .modal-body {
+    .enrollment-modal-body {
         padding: 2rem;
     }
 
-    .form-group {
+    .enrollment-form-group {
         margin-bottom: 1.5rem;
     }
 
-    .form-group label {
+    .enrollment-form-group label {
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 600;
@@ -306,35 +305,35 @@ $classes = [
         font-size: 0.875rem;
     }
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
+    .enrollment-form-group input,
+    .enrollment-form-group select,
+    .enrollment-form-group textarea {
         width: 100%;
         padding: 0.75rem;
-        border: 1px solid #d1d5db;
+        border: 2px solid #d1d5db;
         border-radius: 0.5rem;
         font-size: 1rem;
         transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
+    .enrollment-form-group input:focus,
+    .enrollment-form-group select:focus,
+    .enrollment-form-group textarea:focus {
         outline: none;
-        border-color: #4f46e5;
-        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
-    .form-group textarea {
+    .enrollment-form-group textarea {
         resize: vertical;
         min-height: 100px;
     }
 
-    .form-required {
+    .enrollment-form-required {
         color: #ef4444;
     }
 
-    .submit-btn {
+    .enrollment-submit-btn {
         width: 100%;
         padding: 1rem;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -347,36 +346,49 @@ $classes = [
         transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .submit-btn:hover {
+    .enrollment-submit-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
     }
 
-    .submit-btn:disabled {
+    .enrollment-submit-btn:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         transform: none;
     }
 
-    .success-message {
+    .enrollment-success-message {
         display: none;
         text-align: center;
-        padding: 2rem;
+        padding: 3rem 2rem;
     }
 
-    .success-message.active {
+    .enrollment-success-message.active {
         display: block;
     }
 
-    .success-icon {
-        width: 4rem;
-        height: 4rem;
+    .enrollment-success-icon {
+        width: 5rem;
+        height: 5rem;
         background: #10b981;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 1rem;
+        margin: 0 auto 1.5rem;
+        animation: scaleIn 0.5s ease;
+    }
+
+    .enrollment-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+        .enrollment-form-grid {
+            grid-template-columns: 1fr;
+        }
     }
 
     @keyframes fadeIn {
@@ -398,6 +410,16 @@ $classes = [
         to {
             transform: translateY(0);
             opacity: 1;
+        }
+    }
+
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+        }
+
+        to {
+            transform: scale(1);
         }
     }
 </style>
@@ -544,10 +566,10 @@ $classes = [
                         <?php echo htmlspecialchars($class['description']); ?>
                     </p>
 
-                    <a href="<?php echo BASE_URL; ?>/enroll?class=<?php echo urlencode(strtolower($class['name'])); ?>"
+                    <button onclick="openEnrollmentModal('<?php echo htmlspecialchars($class['name']); ?>')"
                         class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg font-semibold transition text-sm">
                         Enroll Now
-                    </a>
+                    </button>
                 </div>
             <?php endforeach; ?>
         </div>
@@ -607,6 +629,144 @@ $classes = [
         </div>
     </div>
 </section>
+
+<!-- Enrollment Modal -->
+<div id="enrollmentModal" class="enrollment-modal-overlay">
+    <div class="enrollment-modal">
+        <div class="enrollment-modal-header">
+            <button class="enrollment-modal-close" onclick="closeEnrollmentModal()">×</button>
+            <h2 class="text-3xl font-bold mb-2">Enroll in <span id="modalClassName"></span></h2>
+            <p class="text-indigo-100">Fill in your details to start your learning journey</p>
+        </div>
+
+        <div class="enrollment-modal-body">
+            <form id="enrollmentForm" onsubmit="submitEnrollment(event)">
+                <input type="hidden" id="enrollClassName" name="class_name">
+
+                <!-- Student Information -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Student Information</h3>
+                    <div class="enrollment-form-grid">
+                        <div class="enrollment-form-group">
+                            <label>Student Name <span class="enrollment-form-required">*</span></label>
+                            <input type="text" name="student_name" required placeholder="Enter student name">
+                        </div>
+                        <div class="enrollment-form-group">
+                            <label>Student Age <span class="enrollment-form-required">*</span></label>
+                            <input type="number" name="student_age" required min="3" max="100" placeholder="Age">
+                        </div>
+                    </div>
+
+                    <div class="enrollment-form-grid">
+                        <div class="enrollment-form-group">
+                            <label>Student Email <span class="enrollment-form-required">*</span></label>
+                            <input type="email" name="student_email" required placeholder="student@example.com">
+                        </div>
+                        <div class="enrollment-form-group">
+                            <label>Student Phone <span class="enrollment-form-required">*</span></label>
+                            <input type="tel" name="student_phone" required placeholder="+91 98765 43210">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parent/Guardian Information -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Parent/Guardian Information</h3>
+                    <div class="enrollment-form-grid">
+                        <div class="enrollment-form-group">
+                            <label>Parent Name</label>
+                            <input type="text" name="parent_name" placeholder="Parent/Guardian name">
+                        </div>
+                        <div class="enrollment-form-group">
+                            <label>Parent Phone</label>
+                            <input type="tel" name="parent_phone" placeholder="+91 98765 43210">
+                        </div>
+                    </div>
+                    <div class="enrollment-form-group">
+                        <label>Parent Email</label>
+                        <input type="email" name="parent_email" placeholder="parent@example.com">
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Address Details</h3>
+                    <div class="enrollment-form-group">
+                        <label>Address</label>
+                        <textarea name="address" rows="2" placeholder="Full address"></textarea>
+                    </div>
+                    <div class="enrollment-form-grid">
+                        <div class="enrollment-form-group">
+                            <label>City</label>
+                            <input type="text" name="city" placeholder="City">
+                        </div>
+                        <div class="enrollment-form-group">
+                            <label>State</label>
+                            <input type="text" name="state" placeholder="State">
+                        </div>
+                    </div>
+                    <div class="enrollment-form-group">
+                        <label>Pincode</label>
+                        <input type="text" name="pincode" placeholder="123456">
+                    </div>
+                </div>
+
+                <!-- Class Preferences -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 border-b pb-2">Class Preferences</h3>
+                    <div class="enrollment-form-grid">
+                        <div class="enrollment-form-group">
+                            <label>Preferred Schedule <span class="enrollment-form-required">*</span></label>
+                            <select name="preferred_schedule" required>
+                                <option value="">Select schedule</option>
+                                <option value="morning">Morning (8 AM - 12 PM)</option>
+                                <option value="afternoon">Afternoon (12 PM - 4 PM)</option>
+                                <option value="evening">Evening (4 PM - 8 PM)</option>
+                                <option value="weekend">Weekend</option>
+                            </select>
+                        </div>
+                        <div class="enrollment-form-group">
+                            <label>Previous Experience</label>
+                            <select name="previous_experience">
+                                <option value="none">No Experience</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="enrollment-form-group">
+                        <label>Preferred Days (Optional)</label>
+                        <input type="text" name="preferred_days" placeholder="e.g., Mon, Wed, Fri">
+                    </div>
+                </div>
+
+                <!-- Additional Message -->
+                <div class="enrollment-form-group">
+                    <label>Additional Message/Requirements</label>
+                    <textarea name="message" rows="3" placeholder="Any special requirements or questions..."></textarea>
+                </div>
+
+                <button type="submit" class="enrollment-submit-btn" id="enrollmentSubmitBtn">
+                    <i class="fas fa-paper-plane mr-2"></i> Submit Enrollment
+                </button>
+            </form>
+
+            <!-- Success Message -->
+            <div id="enrollmentSuccessMessage" class="enrollment-success-message">
+                <div class="enrollment-success-icon">
+                    <i class="fas fa-check text-white text-4xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">Enrollment Submitted Successfully!</h3>
+                <p class="text-gray-600 mb-6">Thank you for enrolling! We've received your application and our team will contact you within 24 hours to confirm your enrollment details.</p>
+                <button onclick="closeEnrollmentModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-lg font-semibold transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="loadingOverlay" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.4);color:#fff;font-size:1.2rem;z-index:9999;">
     Opening your form...
 </div>
@@ -624,6 +784,63 @@ $classes = [
             overlay.style.display = "none";
         }, 800);
     }
+
+    function openEnrollmentModal(className) {
+        document.getElementById('modalClassName').textContent = className;
+        document.getElementById('enrollClassName').value = className;
+        document.getElementById('enrollmentModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeEnrollmentModal() {
+        document.getElementById('enrollmentModal').classList.remove('active');
+        document.body.style.overflow = 'auto';
+        document.getElementById('enrollmentForm').reset();
+        document.getElementById('enrollmentSuccessMessage').classList.remove('active');
+        document.getElementById('enrollmentForm').style.display = 'block';
+    }
+
+    async function submitEnrollment(event) {
+        event.preventDefault();
+
+        const submitBtn = document.getElementById('enrollmentSubmitBtn');
+        const formData = new FormData(event.target);
+
+        // Disable submit button
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Submitting...';
+
+        try {
+            const response = await fetch('<?php echo BASE_URL; ?>/api/enrollments/create.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Hide form and show success message
+                document.getElementById('enrollmentForm').style.display = 'none';
+                document.getElementById('enrollmentSuccessMessage').classList.add('active');
+            } else {
+                alert('Error: ' + (result.message || 'Failed to submit enrollment. Please try again.'));
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Submit Enrollment';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Submit Enrollment';
+        }
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('enrollmentModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeEnrollmentModal();
+        }
+    });
 </script>
 
 <?php include INCLUDES_PATH . '/footer.php'; ?>
