@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Main Entry Point & Router
  * Crystal Chess Tournament Booking Platform
+ * /index.php
  */
 
 require_once __DIR__ . '/config/config.php';
@@ -20,6 +22,23 @@ if ($script_name !== '/' && strpos($uri, trim($script_name, '/')) === 0) {
 // If root URL (http://localhost:8000/), route to "home"
 if ($uri === '' || $uri === 'index.php') {
     $uri = 'home';
+}
+
+// Handle API routes separately (before checking static routes)
+if (strpos($uri, 'api/') === 0) {
+    $apiFile = __DIR__ . '/' . $uri;
+    if (file_exists($apiFile)) {
+        require_once $apiFile;
+        exit;
+    } else {
+        http_response_code(404);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'API endpoint not found: ' . htmlspecialchars($uri)
+        ]);
+        exit;
+    }
 }
 
 // Define all routes
@@ -66,6 +85,7 @@ $routes = [
     'admin-events' => 'modules/admin/events.php',
     'admin-edit-event' => 'modules/admin/edit-event.php',
     'admin-bookings' => 'modules/admin/bookings.php',
+    'admin-enrollments' => 'modules/admin/enrollments.php',
     'admin-payments' => 'modules/admin/payments.php',
     'admin-payment-reports' => 'modules/admin/payment-reports.php',
     'admin-reports' => 'modules/admin/reports.php',
@@ -95,27 +115,30 @@ http_response_code(404);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Page Not Found | Crystal Chess</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-gray-50">
-<div class="min-h-screen flex items-center justify-center px-4">
-    <div class="text-center">
-        <h1 class="text-9xl font-bold text-indigo-600">404</h1>
-        <h2 class="text-4xl font-bold text-gray-800 mb-4">Page Not Found</h2>
-        <p class="text-xl text-gray-600 mb-8">
-            The page <code class="bg-gray-200 px-2 py-1 rounded"><?php echo htmlspecialchars($uri); ?></code> does not exist.
-        </p>
-        <a href="<?php echo BASE_URL; ?>/home"
-           class="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
-            ← Back to Home
-        </a>
+    <div class="min-h-screen flex items-center justify-center px-4">
+        <div class="text-center">
+            <h1 class="text-9xl font-bold text-indigo-600">404</h1>
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Page Not Found</h2>
+            <p class="text-xl text-gray-600 mb-8">
+                The page <code class="bg-gray-200 px-2 py-1 rounded"><?php echo htmlspecialchars($uri); ?></code> does not exist.
+            </p>
+            <a href="<?php echo BASE_URL; ?>/home"
+                class="inline-block bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                ← Back to Home
+            </a>
+        </div>
     </div>
-</div>
 </body>
+
 </html>
 <?php
 exit;
