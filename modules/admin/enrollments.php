@@ -1,62 +1,88 @@
 <?php
 
 /**
- * Admin Enrollments Management Page
+ * Admin Enrollments Management
+ * File: modules/admin/enrollments.php
  */
 
 require_once __DIR__ . '/../../config/config.php';
-require_once ROOT_PATH . '/core/Database.php';
 
-// Start session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+// Check authentication and admin access
+if (!isset($_SESSION['user_id']) || $_SESSION['user_type'] !== 'admin') {
+    header('Location: ' . BASE_URL . '/login');
+    exit;
 }
 
-// Check admin access
-requireRole('admin');
+$pageTitle = 'Manage Enrollments - Admin';
+include INCLUDES_PATH . '/header.php';
 
-$pageTitle = 'Enrollments Management';
 $db = Database::getInstance();
 
+// Handle status update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    if ($_POST['action'] === 'update_status' && isset($_POST['enrollment_id'])) {
+        $enrollmentId = (int)$_POST['enrollment_id'];
+        $newStatus = $_POST['status'];
+        $notes = $_POST['notes'] ?? null;
+
+        $updateData = [
+            'enrollment_status' => $newStatus,
+            'notes' => $notes
+        ];
+
+        if ($newStatus === 'approved') {
+            $updateData['approved_date'] = date('Y-m-d H:i:s');
+            $updateData['approved_by'] = $_SESSION['user_id'];
+        } elseif ($newStatus === 'rejected') {
+            $updateData['rejection_reason'] = $notes;
+        }
+
+        $db->update('enrollments', $updateData, ['enrollment_id' => $enrollmentId]);
+
+        $_SESSION['success_message'] = 'Enrollment status updated successfully!';
+        header('Location: ' . BASE_URL . '/admin-enrollments');
+        exit;
+    }
+}
+
 // Get filter parameters
-$status_filter = $_GET['status'] ?? 'all';
-$search = $_GET['search'] ?? '';
-$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-$per_page = 20;
-$offset = ($page - 1) * $per_page;
+$statusFilter = $_GET['status'] ?? 'all';
+$classFilter = $_GET['class'] ?? 'all';
+$searchQuery = $_GET['search'] ?? '';
 
 // Build query
-$where_conditions = [];
+$sql = "SELECT e.*, u.full_name as user_name, a.full_name as approved_by_name
+        FROM enrollments e
+        LEFT JOIN users u ON e.user_id = u.user_id
+        LEFT JOIN users a ON e.approved_by = a.user_id
+        WHERE 1=1";
+
 $params = [];
 
-if ($status_filter !== 'all') {
-    $where_conditions[] = "enrollment_status = :status";
-    $params[':status'] = $status_filter;
+if ($statusFilter !== 'all') {
+    $sql .= " AND e.enrollment_status = ?";
+    $params[] = $statusFilter;
 }
 
-if (!empty($search)) {
-    $where_conditions[] = "(student_name LIKE :search OR student_email LIKE :search OR class_name LIKE :search)";
-    $params[':search'] = "%{$search}%";
+if ($classFilter !== 'all') {
+    $sql .= " AND e.class_name = ?";
+    $params[] = $classFilter;
 }
 
-$where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
-
-// Get total count
-$count_sql = "SELECT COUNT(*) as total FROM enrollments {$where_clause}";
-$stmt = $db->query($count_sql);
-foreach ($params as $key => $value) {
-    $stmt->bind($key, $value);
+if (!empty($searchQuery)) {
+    $sql .= " AND (e.student_name LIKE ? OR e.student_email LIKE ? OR e.student_phone LIKE ?)";
+    $searchParam = "%$searchQuery%";
+    $params[] = $searchParam;
+    $params[] = $searchParam;
+    $params[] = $searchParam;
 }
-$total_enrollments = $stmt->fetch()['total'];
-$total_pages = ceil($total_enrollments / $per_page);
 
-// Get enrollments
-$sql = "SELECT * FROM enrollments {$where_clause} ORDER BY enrollment_date DESC LIMIT {$per_page} OFFSET {$offset}";
-$stmt = $db->query($sql);
-foreach ($params as $key => $value) {
-    $stmt->bind($key, $value);
-}
-$enrollments = $stmt->fetchAll();
+$sql .= " ORDER BY e.enrollment_date DESC";
+
+$enrollments = $db->query($sql, $params)->fetchAll();
+
+// Get all unique class names for filter
+$classes = $db->query("SELECT DISTINCT class_name FROM enrollments ORDER BY class_name")->fetchAll();
 
 // Get statistics
 $stats = [
@@ -65,360 +91,358 @@ $stats = [
     'approved' => $db->count('enrollments', ['enrollment_status' => 'approved']),
     'rejected' => $db->count('enrollments', ['enrollment_status' => 'rejected'])
 ];
-
-include INCLUDES_PATH . '/header.php';
 ?>
+
+<style>
+    .enrollment-card {
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+        transition: all 0.2s;
+    }
+
+    .enrollment-card:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-approved {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-cancelled {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-overlay.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+</style>
 
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="container mx-auto px-4">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">Enrollments Management</h1>
-            <p class="text-gray-600">Manage all class enrollment applications</p>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">
+                <i class="fas fa-graduation-cap text-indigo-600"></i> Manage Enrollments
+            </h1>
+            <p class="text-gray-600">Review and manage class enrollment requests</p>
         </div>
 
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Total Enrollments</p>
-                        <p class="text-3xl font-bold text-gray-800"><?php echo $stats['total']; ?></p>
-                    </div>
-                    <div class="bg-indigo-100 rounded-full p-3">
-                        <i class="fas fa-users text-indigo-600 text-xl"></i>
-                    </div>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="stat-card">
+                <div class="text-3xl font-bold mb-2"><?php echo $stats['total']; ?></div>
+                <div class="text-indigo-100">Total Enrollments</div>
             </div>
-
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Pending</p>
-                        <p class="text-3xl font-bold text-yellow-600"><?php echo $stats['pending']; ?></p>
-                    </div>
-                    <div class="bg-yellow-100 rounded-full p-3">
-                        <i class="fas fa-clock text-yellow-600 text-xl"></i>
-                    </div>
-                </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <div class="text-3xl font-bold mb-2"><?php echo $stats['pending']; ?></div>
+                <div class="text-orange-100">Pending</div>
             </div>
-
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Approved</p>
-                        <p class="text-3xl font-bold text-green-600"><?php echo $stats['approved']; ?></p>
-                    </div>
-                    <div class="bg-green-100 rounded-full p-3">
-                        <i class="fas fa-check-circle text-green-600 text-xl"></i>
-                    </div>
-                </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <div class="text-3xl font-bold mb-2"><?php echo $stats['approved']; ?></div>
+                <div class="text-green-100">Approved</div>
             </div>
-
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-gray-500 text-sm">Rejected</p>
-                        <p class="text-3xl font-bold text-red-600"><?php echo $stats['rejected']; ?></p>
-                    </div>
-                    <div class="bg-red-100 rounded-full p-3">
-                        <i class="fas fa-times-circle text-red-600 text-xl"></i>
-                    </div>
-                </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                <div class="text-3xl font-bold mb-2"><?php echo $stats['rejected']; ?></div>
+                <div class="text-red-100">Rejected</div>
             </div>
         </div>
 
         <!-- Filters -->
-        <div class="bg-white rounded-lg shadow p-6 mb-6">
-            <form method="GET" class="flex flex-wrap gap-4">
-                <div class="flex-1 min-w-[200px]">
-                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>"
-                        placeholder="Search by name, email, class..."
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-                </div>
-
-                <div class="min-w-[150px]">
-                    <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
-                        <option value="all" <?php echo $status_filter === 'all' ? 'selected' : ''; ?>>All Status</option>
-                        <option value="pending" <?php echo $status_filter === 'pending' ? 'selected' : ''; ?>>Pending</option>
-                        <option value="approved" <?php echo $status_filter === 'approved' ? 'selected' : ''; ?>>Approved</option>
-                        <option value="rejected" <?php echo $status_filter === 'rejected' ? 'selected' : ''; ?>>Rejected</option>
-                        <option value="cancelled" <?php echo $status_filter === 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <form method="GET" action="" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select name="status" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="all" <?php echo $statusFilter === 'all' ? 'selected' : ''; ?>>All Status</option>
+                        <option value="pending" <?php echo $statusFilter === 'pending' ? 'selected' : ''; ?>>Pending</option>
+                        <option value="approved" <?php echo $statusFilter === 'approved' ? 'selected' : ''; ?>>Approved</option>
+                        <option value="rejected" <?php echo $statusFilter === 'rejected' ? 'selected' : ''; ?>>Rejected</option>
+                        <option value="cancelled" <?php echo $statusFilter === 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
                     </select>
                 </div>
 
-                <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-                    <i class="fas fa-filter mr-2"></i>Filter
-                </button>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Class</label>
+                    <select name="class" class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                        <option value="all">All Classes</option>
+                        <?php foreach ($classes as $class): ?>
+                            <option value="<?php echo htmlspecialchars($class['class_name']); ?>"
+                                <?php echo $classFilter === $class['class_name'] ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($class['class_name']); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-                <a href="<?php echo BASE_URL; ?>/admin-enrollments" class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">
-                    <i class="fas fa-redo mr-2"></i>Reset
-                </a>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                    <input type="text" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>"
+                        placeholder="Name, email, phone..."
+                        class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                </div>
+
+                <div class="flex items-end">
+                    <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                        <i class="fas fa-search mr-2"></i> Filter
+                    </button>
+                </div>
             </form>
         </div>
 
-        <!-- Enrollments Table -->
-        <div class="bg-white rounded-lg shadow overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Student</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Class</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contact</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <?php if (empty($enrollments)): ?>
-                            <tr>
-                                <td colspan="7" class="px-6 py-12 text-center text-gray-500">
-                                    <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
-                                    <p>No enrollments found</p>
-                                </td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($enrollments as $enrollment): ?>
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                                        #<?php echo $enrollment['enrollment_id']; ?>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($enrollment['student_name']); ?></div>
-                                        <div class="text-sm text-gray-500">Age: <?php echo $enrollment['student_age'] ?? 'N/A'; ?></div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm font-medium text-gray-900"><?php echo htmlspecialchars($enrollment['class_name']); ?></div>
-                                        <div class="text-sm text-gray-500"><?php echo ucfirst($enrollment['preferred_schedule'] ?? 'N/A'); ?></div>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <div class="text-sm text-gray-900"><?php echo htmlspecialchars($enrollment['student_email']); ?></div>
-                                        <div class="text-sm text-gray-500"><?php echo htmlspecialchars($enrollment['student_phone']); ?></div>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-500">
-                                        <?php echo formatDate($enrollment['enrollment_date']); ?>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <?php
-                                        $statusClasses = [
-                                            'pending' => 'bg-yellow-100 text-yellow-800',
-                                            'approved' => 'bg-green-100 text-green-800',
-                                            'rejected' => 'bg-red-100 text-red-800',
-                                            'cancelled' => 'bg-gray-100 text-gray-800'
-                                        ];
-                                        $statusClass = $statusClasses[$enrollment['enrollment_status']] ?? 'bg-gray-100 text-gray-800';
-                                        ?>
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full <?php echo $statusClass; ?>">
-                                            <?php echo ucfirst($enrollment['enrollment_status']); ?>
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm">
-                                        <button onclick="viewEnrollment(<?php echo $enrollment['enrollment_id']; ?>)"
-                                            class="text-indigo-600 hover:text-indigo-900 mr-3">
-                                            <i class="fas fa-eye"></i> View
-                                        </button>
-
-                                        <?php if ($enrollment['enrollment_status'] === 'pending'): ?>
-                                            <button onclick="updateStatus(<?php echo $enrollment['enrollment_id']; ?>, 'approved')"
-                                                class="text-green-600 hover:text-green-900 mr-3">
-                                                <i class="fas fa-check"></i> Approve
-                                            </button>
-                                            <button onclick="updateStatus(<?php echo $enrollment['enrollment_id']; ?>, 'rejected')"
-                                                class="text-red-600 hover:text-red-900">
-                                                <i class="fas fa-times"></i> Reject
-                                            </button>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
+        <!-- Success Message -->
+        <?php if (isset($_SESSION['success_message'])): ?>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded">
+                <i class="fas fa-check-circle mr-2"></i>
+                <?php echo $_SESSION['success_message'];
+                unset($_SESSION['success_message']); ?>
             </div>
+        <?php endif; ?>
 
-            <!-- Pagination -->
-            <?php if ($total_pages > 1): ?>
-                <div class="bg-gray-50 px-6 py-4 flex items-center justify-between border-t">
-                    <div class="text-sm text-gray-700">
-                        Showing <?php echo $offset + 1; ?> to <?php echo min($offset + $per_page, $total_enrollments); ?> of <?php echo $total_enrollments; ?> results
+        <!-- Enrollments List -->
+        <?php if (empty($enrollments)): ?>
+            <div class="text-center py-12 bg-white rounded-lg shadow-sm">
+                <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500 text-lg">No enrollments found</p>
+            </div>
+        <?php else: ?>
+            <?php foreach ($enrollments as $enrollment): ?>
+                <div class="enrollment-card">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-1">
+                                <?php echo htmlspecialchars($enrollment['student_name']); ?>
+                                <span class="text-sm font-normal text-gray-500">(<?php echo $enrollment['student_age']; ?> years)</span>
+                            </h3>
+                            <p class="text-indigo-600 font-semibold">
+                                <i class="fas fa-book-open mr-1"></i> <?php echo htmlspecialchars($enrollment['class_name']); ?>
+                            </p>
+                        </div>
+                        <span class="status-badge status-<?php echo $enrollment['enrollment_status']; ?>">
+                            <?php echo ucfirst($enrollment['enrollment_status']); ?>
+                        </span>
                     </div>
-                    <div class="flex gap-2">
-                        <?php if ($page > 1): ?>
-                            <a href="?page=<?php echo $page - 1; ?>&status=<?php echo $status_filter; ?>&search=<?php echo urlencode($search); ?>"
-                                class="px-4 py-2 bg-white border rounded-lg hover:bg-gray-50">Previous</a>
-                        <?php endif; ?>
 
-                        <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
-                            <a href="?page=<?php echo $i; ?>&status=<?php echo $status_filter; ?>&search=<?php echo urlencode($search); ?>"
-                                class="px-4 py-2 border rounded-lg <?php echo $i === $page ? 'bg-indigo-600 text-white' : 'bg-white hover:bg-gray-50'; ?>">
-                                <?php echo $i; ?>
-                            </a>
-                        <?php endfor; ?>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 text-sm">
+                        <div>
+                            <p class="text-gray-600"><i class="fas fa-envelope mr-2"></i><?php echo htmlspecialchars($enrollment['student_email']); ?></p>
+                            <p class="text-gray-600"><i class="fas fa-phone mr-2"></i><?php echo htmlspecialchars($enrollment['student_phone']); ?></p>
+                        </div>
+                        <div>
+                            <?php if ($enrollment['parent_name']): ?>
+                                <p class="text-gray-600"><i class="fas fa-user mr-2"></i>Parent: <?php echo htmlspecialchars($enrollment['parent_name']); ?></p>
+                                <p class="text-gray-600"><i class="fas fa-phone mr-2"></i><?php echo htmlspecialchars($enrollment['parent_phone']); ?></p>
+                            <?php endif; ?>
+                        </div>
+                        <div>
+                            <p class="text-gray-600"><i class="fas fa-clock mr-2"></i><?php echo ucfirst($enrollment['preferred_schedule']); ?></p>
+                            <p class="text-gray-600"><i class="fas fa-calendar mr-2"></i>Enrolled: <?php echo date('M j, Y', strtotime($enrollment['enrollment_date'])); ?></p>
+                        </div>
+                    </div>
 
-                        <?php if ($page < $total_pages): ?>
-                            <a href="?page=<?php echo $page + 1; ?>&status=<?php echo $status_filter; ?>&search=<?php echo urlencode($search); ?>"
-                                class="px-4 py-2 bg-white border rounded-lg hover:bg-gray-50">Next</a>
+                    <?php if ($enrollment['city']): ?>
+                        <p class="text-sm text-gray-600 mb-4">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <?php echo htmlspecialchars($enrollment['city']) . ', ' . htmlspecialchars($enrollment['state']); ?>
+                        </p>
+                    <?php endif; ?>
+
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="viewEnrollmentDetails(<?php echo $enrollment['enrollment_id']; ?>)"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition text-sm">
+                            <i class="fas fa-eye mr-1"></i> View Details
+                        </button>
+
+                        <?php if ($enrollment['enrollment_status'] === 'pending'): ?>
+                            <button onclick="updateEnrollmentStatus(<?php echo $enrollment['enrollment_id']; ?>, 'approved')"
+                                class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition text-sm">
+                                <i class="fas fa-check mr-1"></i> Approve
+                            </button>
+                            <button onclick="updateEnrollmentStatus(<?php echo $enrollment['enrollment_id']; ?>, 'rejected')"
+                                class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm">
+                                <i class="fas fa-times mr-1"></i> Reject
+                            </button>
                         <?php endif; ?>
                     </div>
                 </div>
-            <?php endif; ?>
-        </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 </div>
 
-<!-- View Enrollment Modal -->
-<div id="viewModal" class="modal-overlay" style="display:none;">
-    <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <div class="p-6 border-b flex justify-between items-center">
-            <h3 class="text-xl font-bold">Enrollment Details</h3>
-            <button onclick="closeViewModal()" class="text-gray-500 hover:text-gray-700">
-                <i class="fas fa-times text-xl"></i>
+<!-- Update Status Modal -->
+<div id="statusModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Update Enrollment Status</h3>
+        <form method="POST" action="">
+            <input type="hidden" name="action" value="update_status">
+            <input type="hidden" name="enrollment_id" id="modalEnrollmentId">
+            <input type="hidden" name="status" id="modalStatus">
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Notes / Reason</label>
+                <textarea name="notes" rows="4" class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    placeholder="Add notes or rejection reason..."></textarea>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                    Confirm
+                </button>
+                <button type="button" onclick="closeModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- View Details Modal -->
+<div id="detailsModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="flex justify-between items-start mb-4">
+            <h3 class="text-2xl font-bold text-gray-800">Enrollment Details</h3>
+            <button onclick="closeDetailsModal()" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
-        <div id="modalContent" class="p-6">
-            <!-- Content loaded via JavaScript -->
-        </div>
+        <div id="enrollmentDetailsContent"></div>
     </div>
 </div>
 
 <script>
-    function viewEnrollment(enrollmentId) {
-        // Fetch enrollment details via AJAX
-        fetch(`<?php echo BASE_URL; ?>/api/enrollments/view.php?id=${enrollmentId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const e = data.enrollment;
-                    document.getElementById('modalContent').innerHTML = `
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-sm text-gray-500">Enrollment ID</p>
-                                <p class="font-semibold">#${e.enrollment_id}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Status</p>
-                                <p class="font-semibold">${e.enrollment_status.toUpperCase()}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="border-t pt-4">
-                            <h4 class="font-bold mb-2">Student Information</h4>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><p class="text-sm text-gray-500">Name</p><p>${e.student_name}</p></div>
-                                <div><p class="text-sm text-gray-500">Age</p><p>${e.student_age || 'N/A'}</p></div>
-                                <div><p class="text-sm text-gray-500">Email</p><p>${e.student_email}</p></div>
-                                <div><p class="text-sm text-gray-500">Phone</p><p>${e.student_phone}</p></div>
-                            </div>
-                        </div>
-                        
-                        ${e.parent_name ? `
-                        <div class="border-t pt-4">
-                            <h4 class="font-bold mb-2">Parent Information</h4>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><p class="text-sm text-gray-500">Name</p><p>${e.parent_name}</p></div>
-                                <div><p class="text-sm text-gray-500">Phone</p><p>${e.parent_phone || 'N/A'}</p></div>
-                                <div><p class="text-sm text-gray-500">Email</p><p>${e.parent_email || 'N/A'}</p></div>
-                            </div>
-                        </div>
-                        ` : ''}
-                        
-                        <div class="border-t pt-4">
-                            <h4 class="font-bold mb-2">Class Details</h4>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div><p class="text-sm text-gray-500">Class</p><p>${e.class_name}</p></div>
-                                <div><p class="text-sm text-gray-500">Preferred Schedule</p><p>${e.preferred_schedule || 'N/A'}</p></div>
-                                <div><p class="text-sm text-gray-500">Preferred Days</p><p>${e.preferred_days || 'N/A'}</p></div>
-                                <div><p class="text-sm text-gray-500">Experience Level</p><p>${e.previous_experience}</p></div>
-                            </div>
-                        </div>
-                        
-                        ${e.message ? `
-                        <div class="border-t pt-4">
-                            <h4 class="font-bold mb-2">Additional Message</h4>
-                            <p class="text-gray-700">${e.message}</p>
-                        </div>
-                        ` : ''}
-                        
-                        ${e.address ? `
-                        <div class="border-t pt-4">
-                            <h4 class="font-bold mb-2">Address</h4>
-                            <p class="text-gray-700">${e.address}, ${e.city}, ${e.state} - ${e.pincode}</p>
-                        </div>
-                        ` : ''}
-                    </div>
-                `;
-                    document.getElementById('viewModal').style.display = 'flex';
-                }
-            });
+    function updateEnrollmentStatus(enrollmentId, status) {
+        document.getElementById('modalEnrollmentId').value = enrollmentId;
+        document.getElementById('modalStatus').value = status;
+        document.getElementById('statusModal').classList.add('active');
     }
 
-    function closeViewModal() {
-        document.getElementById('viewModal').style.display = 'none';
+    function closeModal() {
+        document.getElementById('statusModal').classList.remove('active');
     }
 
-    function updateStatus(enrollmentId, status) {
-        let notes = '';
-        let rejection_reason = '';
+    function viewEnrollmentDetails(enrollmentId) {
+        // Find enrollment data
+        const enrollments = <?php echo json_encode($enrollments); ?>;
+        const enrollment = enrollments.find(e => e.enrollment_id == enrollmentId);
 
-        if (status === 'rejected') {
-            rejection_reason = prompt('Enter rejection reason (optional):');
-        }
+        if (!enrollment) return;
 
-        if (!confirm(`Are you sure you want to ${status} this enrollment?`)) {
-            return;
-        }
+        let html = `
+            <div class="space-y-4">
+                <div class="border-b pb-3">
+                    <h4 class="font-semibold text-gray-700 mb-2">Student Information</h4>
+                    <p><strong>Name:</strong> ${enrollment.student_name}</p>
+                    <p><strong>Age:</strong> ${enrollment.student_age} years</p>
+                    <p><strong>Email:</strong> ${enrollment.student_email}</p>
+                    <p><strong>Phone:</strong> ${enrollment.student_phone}</p>
+                </div>
+                
+                <div class="border-b pb-3">
+                    <h4 class="font-semibold text-gray-700 mb-2">Parent/Guardian Information</h4>
+                    <p><strong>Name:</strong> ${enrollment.parent_name || 'N/A'}</p>
+                    <p><strong>Phone:</strong> ${enrollment.parent_phone || 'N/A'}</p>
+                    <p><strong>Email:</strong> ${enrollment.parent_email || 'N/A'}</p>
+                </div>
+                
+                <div class="border-b pb-3">
+                    <h4 class="font-semibold text-gray-700 mb-2">Address</h4>
+                    <p>${enrollment.address || 'N/A'}</p>
+                    <p>${enrollment.city || ''} ${enrollment.state || ''} ${enrollment.pincode || ''}</p>
+                </div>
+                
+                <div class="border-b pb-3">
+                    <h4 class="font-semibold text-gray-700 mb-2">Class Details</h4>
+                    <p><strong>Class:</strong> ${enrollment.class_name}</p>
+                    <p><strong>Preferred Schedule:</strong> ${enrollment.preferred_schedule}</p>
+                    <p><strong>Preferred Days:</strong> ${enrollment.preferred_days || 'N/A'}</p>
+                    <p><strong>Previous Experience:</strong> ${enrollment.previous_experience}</p>
+                </div>
+                
+                ${enrollment.message ? `
+                <div class="border-b pb-3">
+                    <h4 class="font-semibold text-gray-700 mb-2">Message</h4>
+                    <p>${enrollment.message}</p>
+                </div>
+                ` : ''}
+                
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">Enrollment Status</h4>
+                    <p><strong>Status:</strong> <span class="status-badge status-${enrollment.enrollment_status}">${enrollment.enrollment_status}</span></p>
+                    <p><strong>Enrollment Date:</strong> ${new Date(enrollment.enrollment_date).toLocaleString()}</p>
+                    ${enrollment.approved_date ? `<p><strong>Approved Date:</strong> ${new Date(enrollment.approved_date).toLocaleString()}</p>` : ''}
+                    ${enrollment.approved_by_name ? `<p><strong>Approved By:</strong> ${enrollment.approved_by_name}</p>` : ''}
+                    ${enrollment.notes ? `<p><strong>Notes:</strong> ${enrollment.notes}</p>` : ''}
+                </div>
+            </div>
+        `;
 
-        const formData = new FormData();
-        formData.append('enrollment_id', enrollmentId);
-        formData.append('status', status);
-        formData.append('notes', notes);
-        formData.append('rejection_reason', rejection_reason);
-
-        fetch('<?php echo BASE_URL; ?>/api/enrollments/update-status.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error.message);
-            });
+        document.getElementById('enrollmentDetailsContent').innerHTML = html;
+        document.getElementById('detailsModal').classList.add('active');
     }
 
-    // Close modal when clicking outside
-    document.getElementById('viewModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeViewModal();
-        }
+    function closeDetailsModal() {
+        document.getElementById('detailsModal').classList.remove('active');
+    }
+
+    // Close modals when clicking outside
+    document.getElementById('statusModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    document.getElementById('detailsModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDetailsModal();
     });
 </script>
 
-<style>
-    .modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 50;
-    }
-</style>
-
-<?php
-include INCLUDES_PATH . '/footer.php';
-?>
+<?php include INCLUDES_PATH . '/footer.php'; ?>
