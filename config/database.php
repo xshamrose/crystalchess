@@ -7,7 +7,7 @@
 
 // Development Environment
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'crystal_chess');
+define('DB_NAME', 'crystalchess');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 
