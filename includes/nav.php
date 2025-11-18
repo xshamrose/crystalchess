@@ -115,6 +115,10 @@ $userName = $_SESSION['user_name'] ?? 'User';
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     👥 Users
                                 </a>
+                                <a href="<?php echo BASE_URL; ?>/admin-manage-participants"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                                    👥 Manage Participants
+                                </a>
                                 <a href="<?php echo BASE_URL; ?>/admin-events"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                     🏆 Events
@@ -155,6 +159,14 @@ $userName = $_SESSION['user_name'] ?? 'User';
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
                                 📖 Booking History
                             </a>
+
+                            <?php if ($userType === 'player'): ?>
+                                <a href="<?php echo BASE_URL; ?>/manage-participants"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 transition-colors">
+                                    👥 My Participants
+                                </a>
+                            <?php endif; ?>
+
                             <hr class="my-1">
                             <a href="<?php echo BASE_URL; ?>/logout"
                                 class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
@@ -207,6 +219,13 @@ $userName = $_SESSION['user_name'] ?? 'User';
                     Booking History
                 </a>
 
+                <?php if ($userType === 'player'): ?>
+                    <a href="<?php echo BASE_URL; ?>/manage-participants"
+                        class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                        👥 My Participants
+                    </a>
+                <?php endif; ?>
+
                 <?php if ($userType === 'organizer'): ?>
                     <a href="<?php echo BASE_URL; ?>/organizer-dashboard"
                         class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
@@ -224,6 +243,10 @@ $userName = $_SESSION['user_name'] ?? 'User';
                         <a href="<?php echo BASE_URL; ?>/admin-users"
                             class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
                             👥 Users
+                        </a>
+                        <a href="<?php echo BASE_URL; ?>/admin-manage-participants"
+                            class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                            👥 Manage Participants
                         </a>
                         <a href="<?php echo BASE_URL; ?>/admin-events"
                             class="block px-3 py-2 rounded-md text-gray-700 hover:bg-purple-50 hover:text-purple-600">

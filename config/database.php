@@ -2,6 +2,7 @@
 
 /**
  * Database Configuration
+ * File: config/database.php
  * Crystal Chess Tournament Booking Platform
  */
 

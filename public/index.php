@@ -3,6 +3,7 @@
 /**
  * Homepage
  * Crystal Chess Tournament Booking Platform
+ * public/index.php
  */
 
 require_once __DIR__ . '/../config/config.php';

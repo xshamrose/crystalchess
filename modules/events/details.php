@@ -1,6 +1,8 @@
 <?php
+
 /**
  * Event Details Page
+ * File Path: modules/events/details.php
  * Displays full information about a selected event
  */
 
@@ -86,9 +88,9 @@ require_once __DIR__ . '/../../includes/header.php';
             <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div class="relative h-96 bg-gradient-to-br from-blue-400 to-purple-500">
                     <?php if (!empty($event['event_image'])): ?>
-                        <img src="<?php echo UPLOADS_URL; ?>/events/<?php echo htmlspecialchars($event['event_image']); ?>" 
-                             class="w-full h-full object-cover" 
-                             alt="<?php echo htmlspecialchars($event['event_name']); ?>">
+                        <img src="<?php echo UPLOADS_URL; ?>/events/<?php echo htmlspecialchars($event['event_image']); ?>"
+                            class="w-full h-full object-cover"
+                            alt="<?php echo htmlspecialchars($event['event_name']); ?>">
                     <?php else: ?>
                         <div class="flex items-center justify-center h-full">
                             <i class="fas fa-chess text-white text-9xl opacity-30"></i>
@@ -237,13 +239,13 @@ require_once __DIR__ . '/../../includes/header.php';
                                 <?php echo $event['available_slots']; ?> / <?php echo $event['max_capacity']; ?>
                             </span>
                         </div>
-                        <?php 
-                            $percentage = ($event['current_bookings'] / $event['max_capacity']) * 100;
-                            $barColor = $percentage >= 90 ? 'bg-red-500' : ($percentage >= 70 ? 'bg-yellow-500' : 'bg-green-500');
+                        <?php
+                        $percentage = ($event['current_bookings'] / $event['max_capacity']) * 100;
+                        $barColor = $percentage >= 90 ? 'bg-red-500' : ($percentage >= 70 ? 'bg-yellow-500' : 'bg-green-500');
                         ?>
                         <div class="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
-                            <div class="<?php echo $barColor; ?> h-3 transition-all duration-300" 
-                                 style="width:<?php echo $percentage; ?>%">
+                            <div class="<?php echo $barColor; ?> h-3 transition-all duration-300"
+                                style="width:<?php echo $percentage; ?>%">
                             </div>
                         </div>
                         <p class="text-xs text-gray-500 mt-1">
@@ -259,25 +261,25 @@ require_once __DIR__ . '/../../includes/header.php';
                                     <i class="fas fa-check-circle text-green-600 text-2xl mb-2"></i>
                                     <p class="text-green-700 font-semibold">You're Registered!</p>
                                 </div>
-                                <a href="<?php echo BASE_URL; ?>/booking-history" 
-                                   class="block text-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
+                                <a href="<?php echo BASE_URL; ?>/booking-history"
+                                    class="block text-center px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
                                     <i class="fas fa-history mr-2"></i>View My Bookings
                                 </a>
                             <?php else: ?>
-                                <a href="<?php echo BASE_URL; ?>/book?event_id=<?php echo $eventId; ?>" 
-                                   class="block text-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold shadow-lg">
+                                <a href="<?php echo BASE_URL; ?>/book?event_id=<?php echo $eventId; ?>"
+                                    class="block text-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold shadow-lg">
                                     <i class="fas fa-ticket-alt mr-2"></i>Book Now
                                 </a>
                             <?php endif; ?>
                         <?php else: ?>
-                            <a href="<?php echo BASE_URL; ?>/login?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>" 
-                               class="block text-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold shadow-lg">
+                            <a href="<?php echo BASE_URL; ?>/login?redirect=<?php echo urlencode($_SERVER['REQUEST_URI']); ?>"
+                                class="block text-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold shadow-lg">
                                 <i class="fas fa-sign-in-alt mr-2"></i>Login to Book
                             </a>
                         <?php endif; ?>
                     <?php else: ?>
-                        <button disabled 
-                                class="w-full px-6 py-3 bg-gray-400 text-white rounded-lg font-semibold cursor-not-allowed">
+                        <button disabled
+                            class="w-full px-6 py-3 bg-gray-400 text-white rounded-lg font-semibold cursor-not-allowed">
                             <i class="fas fa-lock mr-2"></i>Booking Closed
                         </button>
                     <?php endif; ?>
@@ -304,16 +306,16 @@ require_once __DIR__ . '/../../includes/header.php';
                         <div class="pt-3 border-t space-y-2">
                             <p class="text-gray-600 text-sm flex items-center">
                                 <i class="fas fa-envelope text-gray-400 w-5 mr-2"></i>
-                                <a href="mailto:<?php echo htmlspecialchars($event['organizer_email']); ?>" 
-                                   class="hover:text-blue-600">
+                                <a href="mailto:<?php echo htmlspecialchars($event['organizer_email']); ?>"
+                                    class="hover:text-blue-600">
                                     <?php echo htmlspecialchars($event['organizer_email']); ?>
                                 </a>
                             </p>
                             <?php if (!empty($event['organizer_phone'])): ?>
                                 <p class="text-gray-600 text-sm flex items-center">
                                     <i class="fas fa-phone text-gray-400 w-5 mr-2"></i>
-                                    <a href="tel:<?php echo htmlspecialchars($event['organizer_phone']); ?>" 
-                                       class="hover:text-blue-600">
+                                    <a href="tel:<?php echo htmlspecialchars($event['organizer_phone']); ?>"
+                                        class="hover:text-blue-600">
                                         <?php echo htmlspecialchars($event['organizer_phone']); ?>
                                     </a>
                                 </p>
