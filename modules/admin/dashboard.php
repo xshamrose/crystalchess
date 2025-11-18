@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Dashboard
  * Crystal Chess Tournament Booking Platform
@@ -134,7 +135,7 @@ include __DIR__ . '/../../includes/header.php';
                 ['title' => 'Total Users', 'count' => $total_users, 'sub' => "$active_users active", 'color' => 'blue', 'icon' => 'users'],
                 ['title' => 'Total Events', 'count' => $total_events, 'sub' => "$upcoming_events upcoming", 'color' => 'green', 'icon' => 'calendar'],
                 ['title' => 'Total Bookings', 'count' => $total_bookings, 'sub' => "$confirmed_bookings confirmed", 'color' => 'purple', 'icon' => 'clipboard-list'],
-                ['title' => 'Total Revenue', 'count' => '$' . number_format($total_revenue, 2), 'sub' => "$pending_payments pending", 'color' => 'yellow', 'icon' => 'dollar-sign'],
+                ['title' => 'Total Revenue', 'count' => '₹ ' . number_format($total_revenue, 2), 'sub' => "$pending_payments pending", 'color' => 'yellow', 'icon' => 'dollar-sign'],
             ];
 
             foreach ($cards as $card): ?>
@@ -159,23 +160,23 @@ include __DIR__ . '/../../includes/header.php';
             <div class="bg-white rounded-lg shadow p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">User Distribution by Role</h2>
                 <div class="space-y-4">
-                    <?php foreach ($user_roles as $role): 
+                    <?php foreach ($user_roles as $role):
                         $percentage = $total_users > 0 ? ($role['count'] / $total_users) * 100 : 0;
-                        $color = match($role['user_type']) {
+                        $color = match ($role['user_type']) {
                             'player' => 'bg-blue-600',
                             'organizer' => 'bg-green-600',
                             default => 'bg-purple-600'
                         };
                     ?>
-                    <div>
-                        <div class="flex justify-between mb-1">
-                            <span class="text-sm font-medium text-gray-700 capitalize"><?= htmlspecialchars($role['user_type']) ?>s</span>
-                            <span class="text-sm font-medium text-gray-900"><?= number_format($role['count']) ?></span>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm font-medium text-gray-700 capitalize"><?= htmlspecialchars($role['user_type']) ?>s</span>
+                                <span class="text-sm font-medium text-gray-900"><?= number_format($role['count']) ?></span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="<?= $color ?> h-2 rounded-full" style="width: <?= $percentage ?>%"></div>
+                            </div>
                         </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="<?= $color ?> h-2 rounded-full" style="width: <?= $percentage ?>%"></div>
-                        </div>
-                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
@@ -212,13 +213,13 @@ include __DIR__ . '/../../includes/header.php';
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php foreach ($top_organizers as $o): ?>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4"><?= htmlspecialchars($o['full_name']) ?></td>
-                            <td class="px-6 py-4"><?= htmlspecialchars($o['email']) ?></td>
-                            <td class="px-6 py-4"><?= number_format($o['event_count']) ?></td>
-                            <td class="px-6 py-4"><?= number_format($o['booking_count']) ?></td>
-                            <td class="px-6 py-4 text-green-600 font-semibold">$<?= number_format($o['revenue'], 2) ?></td>
-                        </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4"><?= htmlspecialchars($o['full_name']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($o['email']) ?></td>
+                                <td class="px-6 py-4"><?= number_format($o['event_count']) ?></td>
+                                <td class="px-6 py-4"><?= number_format($o['booking_count']) ?></td>
+                                <td class="px-6 py-4 text-green-600 font-semibold">$<?= number_format($o['revenue'], 2) ?></td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -245,15 +246,15 @@ include __DIR__ . '/../../includes/header.php';
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php foreach ($recent_bookings as $b): ?>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4"><?= htmlspecialchars($b['booking_reference']) ?></td>
-                            <td class="px-6 py-4"><?= htmlspecialchars($b['participant_name']) ?></td>
-                            <td class="px-6 py-4"><?= htmlspecialchars($b['event_name']) ?></td>
-                            <td class="px-6 py-4"><?= htmlspecialchars($b['booked_by']) ?></td>
-                            <td class="px-6 py-4"><?= date('M d, Y', strtotime($b['booking_date'])) ?></td>
-                            <td class="px-6 py-4"><?= ucfirst($b['booking_status']) ?></td>
-                            <td class="px-6 py-4"><?= ucfirst($b['payment_status']) ?></td>
-                        </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4"><?= htmlspecialchars($b['booking_reference']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($b['participant_name']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($b['event_name']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($b['booked_by']) ?></td>
+                                <td class="px-6 py-4"><?= date('M d, Y', strtotime($b['booking_date'])) ?></td>
+                                <td class="px-6 py-4"><?= ucfirst($b['booking_status']) ?></td>
+                                <td class="px-6 py-4"><?= ucfirst($b['payment_status']) ?></td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>

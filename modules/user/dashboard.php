@@ -200,7 +200,7 @@ include __DIR__ . '/../../includes/header.php';
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-600 font-medium">Total Spent</p>
-                        <p class="text-3xl font-bold text-indigo-600 mt-2">$<?php echo number_format($stats['total_spent'], 2); ?></p>
+                        <p class="text-3xl font-bold text-indigo-600 mt-2">₹ <?php echo number_format($stats['total_spent'], 2); ?></p>
                     </div>
                     <div class="bg-indigo-100 rounded-full p-3">
                         <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
