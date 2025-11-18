@@ -2,6 +2,7 @@
 
 /**
  * Main Configuration File
+ * File: config/config.php
  * Crystal Chess Tournament Booking Platform
  */
 
@@ -15,7 +16,7 @@ define('ENVIRONMENT', 'development'); // Change to 'production' for live site
 
 // Site Configuration
 define('SITE_NAME', 'Crystal Chess');
-define('SITE_URL', 'http://localhost:8000'); 
+define('SITE_URL', 'http://localhost:8000');
 define('SITE_EMAIL', 'support@crystalchess.com');
 define('SITE_PHONE', '+91 9841523423');
 
@@ -28,7 +29,7 @@ define('UPLOADS_PATH', ROOT_PATH . '/uploads');
 define('ASSETS_PATH', ROOT_PATH . '/assets');
 
 // URL Configuration
-define('BASE_URL', 'http://localhost:8000'); 
+define('BASE_URL', 'http://localhost:8000');
 define('ASSETS_URL', BASE_URL . '/assets');
 define('UPLOADS_URL', BASE_URL . '/uploads');
 
@@ -65,7 +66,7 @@ define('TWILIO_TOKEN', '');
 define('TWILIO_FROM', '');
 
 // Timezone
-date_default_timezone_set('Asia/Kolkata'); 
+date_default_timezone_set('Asia/Kolkata');
 
 // Error Reporting
 if (ENVIRONMENT === 'development') {

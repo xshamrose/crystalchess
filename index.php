@@ -54,6 +54,7 @@ $routes = [
     'reset-password' => 'modules/user/reset-password.php',
     'verify-email' => 'modules/user/verify-email.php',
     'resend-verification' => 'modules/user/resend-verification.php',
+    'manage-participants' => 'modules/user/manage-participants.php',
 
     // User Dashboard
     'dashboard' => 'modules/user/dashboard.php',
@@ -91,6 +92,7 @@ $routes = [
     'admin-reports' => 'modules/admin/reports.php',
     'admin-settings' => 'modules/admin/settings.php',
     'audit-logs' => 'modules/admin/audit-logs.php',
+    'admin-manage-participants' => 'modules/admin/manage-participants.php',
 ];
 
 // Check if route exists

@@ -1,4 +1,5 @@
 <?php
+// modules/user/profile/php
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../core/Database.php';
 require_once __DIR__ . '/../../core/Auth.php';
@@ -15,8 +16,8 @@ $userId = $auth->getUserId();
 
 // ✅ Fetch user data using our Database class
 $user = $db->query("SELECT * FROM users WHERE user_id = :id")
-           ->bind(":id", $userId)
-           ->fetch();
+    ->bind(":id", $userId)
+    ->fetch();
 
 if (!$user) {
     header('Location: login.php');
@@ -38,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
         ]);
 
         $validator->required('full_name', 'Full name')
-                  ->minLength('full_name', 3, 'Full name')
-                  ->maxLength('full_name', 100, 'Full name');
+            ->minLength('full_name', 3, 'Full name')
+            ->maxLength('full_name', 100, 'Full name');
 
         if (!empty($phone)) {
             $validator->phone('phone');
@@ -90,11 +91,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
                 SET full_name = :full_name, phone = :phone, profile_picture = :pic, updated_at = NOW()
                 WHERE user_id = :id
             ")
-            ->bind(':full_name', $fullName)
-            ->bind(':phone', $phone)
-            ->bind(':pic', $profilePicture)
-            ->bind(':id', $userId)
-            ->execute();
+                ->bind(':full_name', $fullName)
+                ->bind(':phone', $phone)
+                ->bind(':pic', $profilePicture)
+                ->bind(':id', $userId)
+                ->execute();
 
             if ($result) {
                 $success = 'Profile updated successfully!';
@@ -125,11 +126,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
         ]);
 
         $validator->required('current_password', 'Current password')
-                  ->required('new_password', 'New password')
-                  ->minLength('new_password', 8, 'New password')
-                  ->password('new_password')
-                  ->required('confirm_password', 'Confirm password')
-                  ->match('new_password', 'confirm_password', 'Passwords');
+            ->required('new_password', 'New password')
+            ->minLength('new_password', 8, 'New password')
+            ->password('new_password')
+            ->required('confirm_password', 'Confirm password')
+            ->match('new_password', 'confirm_password', 'Passwords');
 
         $errors = $validator->getErrors();
 
@@ -146,9 +147,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
                 SET password_hash = :pass, updated_at = NOW() 
                 WHERE user_id = :id
             ")
-            ->bind(':pass', $passwordHash)
-            ->bind(':id', $userId)
-            ->execute();
+                ->bind(':pass', $passwordHash)
+                ->bind(':id', $userId)
+                ->execute();
 
             if ($updated) {
                 $success = 'Password changed successfully!';
@@ -177,32 +178,32 @@ include __DIR__ . '/../../includes/header.php';
 
         <!-- Success Message -->
         <?php if ($success): ?>
-        <div class="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-md">
-            <div class="flex">
-                <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                </svg>
-                <p class="ml-3 text-sm text-green-700"><?php echo htmlspecialchars($success); ?></p>
+            <div class="mb-6 bg-green-50 border-l-4 border-green-400 p-4 rounded-md">
+                <div class="flex">
+                    <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <p class="ml-3 text-sm text-green-700"><?php echo htmlspecialchars($success); ?></p>
+                </div>
             </div>
-        </div>
         <?php endif; ?>
 
         <!-- Error Messages -->
         <?php if (!empty($errors)): ?>
-        <div class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
-            <div class="flex">
-                <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                </svg>
-                <div class="ml-3">
-                    <ul class="text-sm text-red-700 list-disc list-inside">
-                        <?php foreach ($errors as $error): ?>
-                        <li><?php echo htmlspecialchars($error); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
+            <div class="mb-6 bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+                <div class="flex">
+                    <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                    <div class="ml-3">
+                        <ul class="text-sm text-red-700 list-disc list-inside">
+                            <?php foreach ($errors as $error): ?>
+                                <li><?php echo htmlspecialchars($error); ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
         <?php endif; ?>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -213,13 +214,13 @@ include __DIR__ . '/../../includes/header.php';
                     <div class="text-center">
                         <div class="mx-auto h-32 w-32 rounded-full overflow-hidden bg-gray-200 mb-4">
                             <?php if ($user['profile_picture']): ?>
-                            <img src="../../uploads/profiles/<?php echo htmlspecialchars($user['profile_picture']); ?>" 
-                                 alt="Profile" 
-                                 class="h-full w-full object-cover">
+                                <img src="../../uploads/profiles/<?php echo htmlspecialchars($user['profile_picture']); ?>"
+                                    alt="Profile"
+                                    class="h-full w-full object-cover">
                             <?php else: ?>
-                            <div class="h-full w-full flex items-center justify-center bg-indigo-500 text-white text-4xl font-bold">
-                                <?php echo strtoupper(substr($user['full_name'], 0, 1)); ?>
-                            </div>
+                                <div class="h-full w-full flex items-center justify-center bg-indigo-500 text-white text-4xl font-bold">
+                                    <?php echo strtoupper(substr($user['full_name'], 0, 1)); ?>
+                                </div>
                             <?php endif; ?>
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900"><?php echo htmlspecialchars($user['full_name']); ?></h3>
@@ -234,14 +235,14 @@ include __DIR__ . '/../../includes/header.php';
                         <div class="flex items-center justify-between text-sm">
                             <span class="text-gray-500">Email Status</span>
                             <?php if ($user['email_verified']): ?>
-                            <span class="text-green-600 flex items-center">
-                                <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                                Verified
-                            </span>
+                                <span class="text-green-600 flex items-center">
+                                    <svg class="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                    </svg>
+                                    Verified
+                                </span>
                             <?php else: ?>
-                            <span class="text-yellow-600">Not Verified</span>
+                                <span class="text-yellow-600">Not Verified</span>
                             <?php endif; ?>
                         </div>
                         <div class="mt-2 flex items-center justify-between text-sm">
@@ -276,14 +277,13 @@ include __DIR__ . '/../../includes/header.php';
                             <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">
                                 Full Name <span class="text-red-500">*</span>
                             </label>
-                            <input 
-                                type="text" 
-                                id="full_name" 
-                                name="full_name" 
+                            <input
+                                type="text"
+                                id="full_name"
+                                name="full_name"
                                 required
                                 value="<?php echo htmlspecialchars($user['full_name']); ?>"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            >
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
 
                         <!-- Email (Read-only) -->
@@ -291,13 +291,12 @@ include __DIR__ . '/../../includes/header.php';
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
                                 Email Address
                             </label>
-                            <input 
-                                type="email" 
-                                id="email" 
+                            <input
+                                type="email"
+                                id="email"
                                 value="<?php echo htmlspecialchars($user['email']); ?>"
                                 disabled
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed"
-                            >
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed">
                             <p class="mt-1 text-xs text-gray-500">Email cannot be changed</p>
                         </div>
 
@@ -306,14 +305,13 @@ include __DIR__ . '/../../includes/header.php';
                             <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">
                                 Phone Number
                             </label>
-                            <input 
-                                type="tel" 
-                                id="phone" 
-                                name="phone" 
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
                                 value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                placeholder="+1234567890"
-                            >
+                                placeholder="+1234567890">
                         </div>
 
                         <!-- Profile Picture -->
@@ -321,22 +319,20 @@ include __DIR__ . '/../../includes/header.php';
                             <label for="profile_picture" class="block text-sm font-medium text-gray-700 mb-1">
                                 Profile Picture
                             </label>
-                            <input 
-                                type="file" 
-                                id="profile_picture" 
-                                name="profile_picture" 
+                            <input
+                                type="file"
+                                id="profile_picture"
+                                name="profile_picture"
                                 accept="image/jpeg,image/png,image/jpg"
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            >
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                             <p class="mt-1 text-xs text-gray-500">JPG or PNG. Max 5MB.</p>
                         </div>
 
                         <!-- Submit Button -->
                         <div class="pt-4">
-                            <button 
-                                type="submit" 
-                                class="w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
-                            >
+                            <button
+                                type="submit"
+                                class="w-full sm:w-auto px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
                                 Save Changes
                             </button>
                         </div>
@@ -357,12 +353,11 @@ include __DIR__ . '/../../includes/header.php';
                             <label for="current_password" class="block text-sm font-medium text-gray-700 mb-1">
                                 Current Password <span class="text-red-500">*</span>
                             </label>
-                            <input 
-                                type="password" 
-                                id="current_password" 
-                                name="current_password" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            >
+                            <input
+                                type="password"
+                                id="current_password"
+                                name="current_password"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
 
                         <!-- New Password -->
@@ -370,12 +365,11 @@ include __DIR__ . '/../../includes/header.php';
                             <label for="new_password" class="block text-sm font-medium text-gray-700 mb-1">
                                 New Password <span class="text-red-500">*</span>
                             </label>
-                            <input 
-                                type="password" 
-                                id="new_password" 
-                                name="new_password" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            >
+                            <input
+                                type="password"
+                                id="new_password"
+                                name="new_password"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                             <p class="mt-1 text-xs text-gray-500">Min. 8 characters with uppercase, lowercase, and number</p>
                         </div>
 
@@ -384,20 +378,18 @@ include __DIR__ . '/../../includes/header.php';
                             <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-1">
                                 Confirm New Password <span class="text-red-500">*</span>
                             </label>
-                            <input 
-                                type="password" 
-                                id="confirm_password" 
-                                name="confirm_password" 
-                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            >
+                            <input
+                                type="password"
+                                id="confirm_password"
+                                name="confirm_password"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
 
                         <!-- Submit Button -->
                         <div class="pt-4">
-                            <button 
-                                type="submit" 
-                                class="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
-                            >
+                            <button
+                                type="submit"
+                                class="w-full sm:w-auto px-6 py-2 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
                                 Change Password
                             </button>
                         </div>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Payment Gateway Configuration
  * Crystal Chess Tournament Booking Platform
@@ -44,7 +45,8 @@ define('INCLUDE_FEE_IN_PRICE', false); // If true, fee is added to event price
 /**
  * Get Stripe Configuration
  */
-function getStripeConfig() {
+function getStripeConfig()
+{
     return [
         'publishable_key' => STRIPE_PUBLISHABLE_KEY,
         'secret_key' => STRIPE_SECRET_KEY,
@@ -56,7 +58,8 @@ function getStripeConfig() {
 /**
  * Get PayPal Configuration
  */
-function getPayPalConfig() {
+function getPayPalConfig()
+{
     return [
         'mode' => PAYPAL_MODE,
         'client_id' => PAYPAL_CLIENT_ID,
@@ -68,7 +71,8 @@ function getPayPalConfig() {
 /**
  * Get Razorpay Configuration
  */
-function getRazorpayConfig() {
+function getRazorpayConfig()
+{
     return [
         'key_id' => RAZORPAY_KEY_ID,
         'key_secret' => RAZORPAY_KEY_SECRET,
@@ -79,7 +83,8 @@ function getRazorpayConfig() {
 /**
  * Calculate Total Amount with Platform Fee
  */
-function calculateTotalAmount($baseAmount) {
+function calculateTotalAmount($baseAmount)
+{
     if (INCLUDE_FEE_IN_PRICE) {
         $fee = ($baseAmount * PLATFORM_FEE_PERCENTAGE) / 100;
         return round($baseAmount + $fee, 2);
@@ -90,6 +95,7 @@ function calculateTotalAmount($baseAmount) {
 /**
  * Format Currency
  */
-function formatCurrency($amount) {
+function formatCurrency($amount)
+{
     return CURRENCY_SYMBOL . number_format($amount, 2);
 }
