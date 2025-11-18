@@ -423,6 +423,58 @@ $classes = [
             transform: scale(1);
         }
     }
+
+    /* --- Ad marquee --- */
+    .ad-marquee {
+        /* background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(249, 250, 251, 0.95)); */
+        /* border: 1px solid rgba(99, 102, 241, 0.08); */
+        /* padding: 0.5rem 0.75rem; */
+        border-radius: 0.5rem;
+        overflow: hidden;
+        /* box-shadow: 0 4px 14px rgba(99, 102, 241, 0.04); */
+        /* margin: 1rem 0; */
+        font-size: 0.95rem;
+    }
+
+    .ad-marquee .marquee-track {
+        display: inline-block;
+        white-space: nowrap;
+        will-change: transform;
+        animation: marquee-left 18s linear infinite;
+    }
+
+    .ad-marquee .ad-item {
+        display: inline-block;
+        padding: 0 1.25rem;
+        margin-right: 0.5rem;
+        font-weight: 600;
+    }
+
+    .ad-marquee .ad-sep {
+        opacity: 0.5;
+        margin: 0 0.5rem;
+    }
+
+    /* Slightly slower on small screens */
+    @media (max-width: 640px) {
+        .ad-marquee {
+            font-size: 0.9rem;
+        }
+
+        .ad-marquee .marquee-track {
+            animation-duration: 26s;
+        }
+    }
+
+    @keyframes marquee-left {
+        from {
+            transform: translate3d(100%, 0, 0);
+        }
+
+        to {
+            transform: translate3d(-100%, 0, 0);
+        }
+    }
 </style>
 
 <!-- Statistics Section -->
@@ -431,7 +483,16 @@ $classes = [
 
     </div>
 </section>
-
+<div class="ad-marquee" role="region" aria-label="Promotions" tabindex="0">
+    <div class="marquee-track" aria-hidden="false">
+        <span class="ad-item">🔥 Summer Chess Camp — Early-bird 20% off!</span>
+        <span class="ad-sep">•</span>
+        <span class="ad-item">Free demo classes every weekend — Book now</span>
+        <span class="ad-sep">•</span>
+        <span class="ad-item">Sponsored: Ace Chess Supplies — 10% discount for members</span>
+        <!-- repeat items if you want a longer loop -->
+    </div>
+</div>
 <!-- Featured Events Section - Full Viewport -->
 <section class="featured-tournaments-section bg-gray-50">
     <div class="featured-tournaments-container">
@@ -504,8 +565,11 @@ $classes = [
                                 View Details <i class="fas fa-arrow-right ml-2"></i>
                             </a>
                         </div>
+
                     </div>
+
                 <?php endforeach; ?>
+
             </div>
 
             <div class="text-center">
@@ -514,7 +578,18 @@ $classes = [
                     View All Events <i class="fas fa-arrow-right ml-2"></i>
                 </a>
             </div>
+
         <?php endif; ?>
+    </div>
+    <div class="ad-marquee" role="region" aria-label="Promotions" tabindex="0">
+        <div class="marquee-track" aria-hidden="false">
+            <span class="ad-item">🔥 Summer Chess Camp — Early-bird 20% off!</span>
+            <span class="ad-sep">•</span>
+            <span class="ad-item">Free demo classes every weekend — Book now</span>
+            <span class="ad-sep">•</span>
+            <span class="ad-item">Sponsored: Ace Chess Supplies — 10% discount for members</span>
+            <!-- repeat items if you want a longer loop -->
+        </div>
     </div>
 </section>
 
@@ -841,6 +916,23 @@ $classes = [
         if (e.target === this) {
             closeEnrollmentModal();
         }
+    });
+    // Pause marquee on hover / focus for accessibility
+    document.querySelectorAll('.ad-marquee').forEach(function(node) {
+        var track = node.querySelector('.marquee-track');
+        if (!track) return;
+        node.addEventListener('mouseenter', function() {
+            track.style.animationPlayState = 'paused';
+        });
+        node.addEventListener('mouseleave', function() {
+            track.style.animationPlayState = 'running';
+        });
+        node.addEventListener('focusin', function() {
+            track.style.animationPlayState = 'paused';
+        });
+        node.addEventListener('focusout', function() {
+            track.style.animationPlayState = 'running';
+        });
     });
 </script>
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin Payment Reports
  * File: modules/admin/payment-reports.php
@@ -90,13 +91,13 @@ include __DIR__ . '/../../includes/header.php';
             <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
-                    <input type="date" name="start_date" value="<?= htmlspecialchars($startDate) ?>" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    <input type="date" name="start_date" value="<?= htmlspecialchars($startDate) ?>"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
-                    <input type="date" name="end_date" value="<?= htmlspecialchars($endDate) ?>" 
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
+                    <input type="date" name="end_date" value="<?= htmlspecialchars($endDate) ?>"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
@@ -131,7 +132,7 @@ include __DIR__ . '/../../includes/header.php';
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-lg shadow-lg p-6 text-white">
                 <p class="text-green-100 text-sm font-medium">Total Revenue</p>
-                <p class="text-3xl font-bold mt-2">$<?= number_format($stats['total_revenue'], 2) ?></p>
+                <p class="text-3xl font-bold mt-2">₹ <?= number_format($stats['total_revenue'], 2) ?></p>
             </div>
             <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-6 text-white">
                 <p class="text-blue-100 text-sm font-medium">Total Transactions</p>
@@ -139,11 +140,11 @@ include __DIR__ . '/../../includes/header.php';
             </div>
             <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-6 text-white">
                 <p class="text-orange-100 text-sm font-medium">Total Refunds</p>
-                <p class="text-3xl font-bold mt-2">$<?= number_format($stats['total_refunds'], 2) ?></p>
+                <p class="text-3xl font-bold mt-2">₹ <?= number_format($stats['total_refunds'], 2) ?></p>
             </div>
             <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg shadow-lg p-6 text-white">
                 <p class="text-purple-100 text-sm font-medium">Avg Transaction</p>
-                <p class="text-3xl font-bold mt-2">$<?= number_format($stats['avg_transaction'] ?? 0, 2) ?></p>
+                <p class="text-3xl font-bold mt-2">₹ <?= number_format($stats['avg_transaction'] ?? 0, 2) ?></p>
             </div>
         </div>
 
@@ -168,48 +169,50 @@ include __DIR__ . '/../../includes/header.php';
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         <?php if (empty($payments)): ?>
-                            <tr><td colspan="8" class="px-6 py-8 text-center text-gray-500">No transactions found</td></tr>
+                            <tr>
+                                <td colspan="8" class="px-6 py-8 text-center text-gray-500">No transactions found</td>
+                            </tr>
                         <?php else: ?>
                             <?php foreach ($payments as $payment): ?>
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-mono text-gray-900">
-                                    <?= htmlspecialchars(substr($payment['transaction_id'] ?? 'N/A', 0, 16)) ?>...
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-600">
-                                    <?= date('M d, Y', strtotime($payment['payment_date'])) ?>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">
-                                    <?= htmlspecialchars($payment['full_name']) ?><br>
-                                    <span class="text-gray-500"><?= htmlspecialchars($payment['email']) ?></span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">
-                                    <?= htmlspecialchars($payment['event_name']) ?><br>
-                                    <span class="text-gray-500"><?= htmlspecialchars($payment['booking_reference']) ?></span>
-                                </td>
-                                <td class="px-6 py-4 text-sm capitalize">
-                                    <?= htmlspecialchars($payment['payment_gateway']) ?>
-                                </td>
-                                <td class="px-6 py-4 text-sm font-semibold text-gray-900">
-                                    $<?= number_format($payment['amount'], 2) ?>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <?php
-                                    $statusColors = [
-                                        'completed' => 'bg-green-100 text-green-800',
-                                        'pending' => 'bg-yellow-100 text-yellow-800',
-                                        'failed' => 'bg-red-100 text-red-800',
-                                        'refunded' => 'bg-orange-100 text-orange-800'
-                                    ];
-                                    $color = $statusColors[$payment['payment_status']] ?? 'bg-gray-100 text-gray-800';
-                                    ?>
-                                    <span class="px-2 py-1 text-xs font-semibold rounded-full <?= $color ?>">
-                                        <?= ucfirst($payment['payment_status']) ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-sm">
-                                    <button onclick="viewDetails(<?= $payment['payment_id'] ?>)" class="text-purple-600 hover:text-purple-800">View</button>
-                                </td>
-                            </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm font-mono text-gray-900">
+                                        <?= htmlspecialchars(substr($payment['transaction_id'] ?? 'N/A', 0, 16)) ?>...
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        <?= date('M d, Y', strtotime($payment['payment_date'])) ?>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">
+                                        <?= htmlspecialchars($payment['full_name']) ?><br>
+                                        <span class="text-gray-500"><?= htmlspecialchars($payment['email']) ?></span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-900">
+                                        <?= htmlspecialchars($payment['event_name']) ?><br>
+                                        <span class="text-gray-500"><?= htmlspecialchars($payment['booking_reference']) ?></span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm capitalize">
+                                        <?= htmlspecialchars($payment['payment_gateway']) ?>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm font-semibold text-gray-900">
+                                        ₹ <?= number_format($payment['amount'], 2) ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <?php
+                                        $statusColors = [
+                                            'completed' => 'bg-green-100 text-green-800',
+                                            'pending' => 'bg-yellow-100 text-yellow-800',
+                                            'failed' => 'bg-red-100 text-red-800',
+                                            'refunded' => 'bg-orange-100 text-orange-800'
+                                        ];
+                                        $color = $statusColors[$payment['payment_status']] ?? 'bg-gray-100 text-gray-800';
+                                        ?>
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full <?= $color ?>">
+                                            <?= ucfirst($payment['payment_status']) ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm">
+                                        <button onclick="viewDetails(<?= $payment['payment_id'] ?>)" class="text-purple-600 hover:text-purple-800">View</button>
+                                    </td>
+                                </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </tbody>
@@ -220,11 +223,11 @@ include __DIR__ . '/../../includes/header.php';
 </div>
 
 <script>
-function exportReport() {
-    const params = new URLSearchParams(window.location.search);
-    params.append('export', 'csv');
-    window.location.href = '/api/payments/export.php?' + params.toString();
-}
+    function exportReport() {
+        const params = new URLSearchParams(window.location.search);
+        params.append('export', 'csv');
+        window.location.href = '/api/payments/export.php?' + params.toString();
+    }
 </script>
 
 <?php include __DIR__ . '/../../includes/footer.php'; ?>
